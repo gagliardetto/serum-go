@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+
 	ag_spew "github.com/davecgh/go-spew/spew"
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
@@ -112,6 +113,7 @@ func InstructionIDToName(id uint32) string {
 }
 
 type Instruction struct {
+	Version uint8
 	ag_binary.BaseVariant
 }
 
@@ -203,12 +205,20 @@ func (inst *Instruction) TextEncode(encoder *ag_text.Encoder, option *ag_text.Op
 	return encoder.Encode(inst.Impl, option)
 }
 
-func (inst *Instruction) UnmarshalWithDecoder(decoder *ag_binary.Decoder) error {
+func (inst *Instruction) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	inst.Version, err = decoder.ReadUint8()
+	if err != nil {
+		return fmt.Errorf("unable to read version: %w", err)
+	}
 	return inst.BaseVariant.UnmarshalBinaryVariant(decoder, InstructionImplDef)
 }
 
 func (inst *Instruction) MarshalWithEncoder(encoder *ag_binary.Encoder) error {
-	err := encoder.WriteUint32(inst.TypeID.Uint32(), binary.LittleEndian)
+	err := encoder.WriteUint8(inst.Version)
+	if err != nil {
+		return fmt.Errorf("unable to write instruction version: %w", err)
+	}
+	err = encoder.WriteUint32(inst.TypeID.Uint32(), binary.LittleEndian)
 	if err != nil {
 		return fmt.Errorf("unable to write variant type: %w", err)
 	}
