@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -260,7 +261,9 @@ func (inst *SettleFunds) EncodeToTree(parent ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("        pcWallet", inst.AccountMetaSlice[6]))
 						accountsBranch.Child(ag_format.Meta("     vaultSigner", inst.AccountMetaSlice[7]))
 						accountsBranch.Child(ag_format.Meta(" splTokenProgram", inst.AccountMetaSlice[8]))
-						accountsBranch.Child(ag_format.Meta("referrerPcWallet", inst.AccountMetaSlice[9]))
+						if len(inst.AccountMetaSlice) > 9 {
+							accountsBranch.Child(ag_format.Meta("referrerPcWallet", inst.AccountMetaSlice[9]))
+						}
 					})
 				})
 		})
