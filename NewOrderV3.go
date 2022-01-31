@@ -36,7 +36,7 @@ type NewOrderV3 struct {
 	// [6] = [WRITE] orderPayer
 	// ··········· the (coin or price currency) account paying for the order
 	//
-	// [7] = [SIGNER] openOrdersOwner
+	// [7] = [SIGNER] owner
 	// ··········· owner of the OpenOrders account
 	//
 	// [8] = [WRITE] coinVault
@@ -161,16 +161,16 @@ func (inst *NewOrderV3) GetOrderPayerAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[6]
 }
 
-// SetOpenOrdersOwnerAccount sets the "openOrdersOwner" account.
+// SetOwnerAccount sets the "owner" account.
 // owner of the OpenOrders account
-func (inst *NewOrderV3) SetOpenOrdersOwnerAccount(openOrdersOwner ag_solanago.PublicKey) *NewOrderV3 {
-	inst.AccountMetaSlice[7] = ag_solanago.Meta(openOrdersOwner).SIGNER()
+func (inst *NewOrderV3) SetOwnerAccount(owner ag_solanago.PublicKey) *NewOrderV3 {
+	inst.AccountMetaSlice[7] = ag_solanago.Meta(owner).SIGNER()
 	return inst
 }
 
-// GetOpenOrdersOwnerAccount gets the "openOrdersOwner" account.
+// GetOwnerAccount gets the "owner" account.
 // owner of the OpenOrders account
-func (inst *NewOrderV3) GetOpenOrdersOwnerAccount() *ag_solanago.AccountMeta {
+func (inst *NewOrderV3) GetOwnerAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[7]
 }
 
@@ -288,7 +288,7 @@ func (inst *NewOrderV3) Validate() error {
 			return errors.New("accounts.OrderPayer is not set")
 		}
 		if inst.AccountMetaSlice[7] == nil {
-			return errors.New("accounts.OpenOrdersOwner is not set")
+			return errors.New("accounts.Owner is not set")
 		}
 		if inst.AccountMetaSlice[8] == nil {
 			return errors.New("accounts.CoinVault is not set")
@@ -331,7 +331,7 @@ func (inst *NewOrderV3) EncodeToTree(parent ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("           bids", inst.AccountMetaSlice[4]))
 						accountsBranch.Child(ag_format.Meta("           asks", inst.AccountMetaSlice[5]))
 						accountsBranch.Child(ag_format.Meta("     orderPayer", inst.AccountMetaSlice[6]))
-						accountsBranch.Child(ag_format.Meta("openOrdersOwner", inst.AccountMetaSlice[7]))
+						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice[7]))
 						accountsBranch.Child(ag_format.Meta("      coinVault", inst.AccountMetaSlice[8]))
 						accountsBranch.Child(ag_format.Meta("        pcVault", inst.AccountMetaSlice[9]))
 						accountsBranch.Child(ag_format.Meta("splTokenProgram", inst.AccountMetaSlice[10]))
@@ -371,7 +371,7 @@ func NewNewOrderV3Instruction(
 	bids ag_solanago.PublicKey,
 	asks ag_solanago.PublicKey,
 	orderPayer ag_solanago.PublicKey,
-	openOrdersOwner ag_solanago.PublicKey,
+	owner ag_solanago.PublicKey,
 	coinVault ag_solanago.PublicKey,
 	pcVault ag_solanago.PublicKey,
 	splTokenProgram ag_solanago.PublicKey,
@@ -386,7 +386,7 @@ func NewNewOrderV3Instruction(
 		SetBidsAccount(bids).
 		SetAsksAccount(asks).
 		SetOrderPayerAccount(orderPayer).
-		SetOpenOrdersOwnerAccount(openOrdersOwner).
+		SetOwnerAccount(owner).
 		SetCoinVaultAccount(coinVault).
 		SetPcVaultAccount(pcVault).
 		SetSplTokenProgramAccount(splTokenProgram).

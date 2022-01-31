@@ -17,7 +17,7 @@ type InitOpenOrders struct {
 	// [0] = [WRITE] openOrders
 	// ··········· OpenOrders
 	//
-	// [1] = [SIGNER] openOrdersOwner
+	// [1] = [SIGNER] owner
 	// ··········· the OpenOrders owner
 	//
 	// [2] = [] market
@@ -52,16 +52,16 @@ func (inst *InitOpenOrders) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[0]
 }
 
-// SetOpenOrdersOwnerAccount sets the "openOrdersOwner" account.
+// SetOwnerAccount sets the "owner" account.
 // the OpenOrders owner
-func (inst *InitOpenOrders) SetOpenOrdersOwnerAccount(openOrdersOwner ag_solanago.PublicKey) *InitOpenOrders {
-	inst.AccountMetaSlice[1] = ag_solanago.Meta(openOrdersOwner).SIGNER()
+func (inst *InitOpenOrders) SetOwnerAccount(owner ag_solanago.PublicKey) *InitOpenOrders {
+	inst.AccountMetaSlice[1] = ag_solanago.Meta(owner).SIGNER()
 	return inst
 }
 
-// GetOpenOrdersOwnerAccount gets the "openOrdersOwner" account.
+// GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
-func (inst *InitOpenOrders) GetOpenOrdersOwnerAccount() *ag_solanago.AccountMeta {
+func (inst *InitOpenOrders) GetOwnerAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[1]
 }
 
@@ -128,7 +128,7 @@ func (inst *InitOpenOrders) Validate() error {
 			return errors.New("accounts.OpenOrders is not set")
 		}
 		if inst.AccountMetaSlice[1] == nil {
-			return errors.New("accounts.OpenOrdersOwner is not set")
+			return errors.New("accounts.Owner is not set")
 		}
 		if inst.AccountMetaSlice[2] == nil {
 			return errors.New("accounts.Market is not set")
@@ -157,7 +157,7 @@ func (inst *InitOpenOrders) EncodeToTree(parent ag_treeout.Branches) {
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=5]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("openOrdersOwner", inst.AccountMetaSlice[1]))
+						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice[1]))
 						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice[2]))
 						accountsBranch.Child(ag_format.Meta("           rent", inst.AccountMetaSlice[3]))
 						accountsBranch.Child(ag_format.Meta("marketAuthority", inst.AccountMetaSlice[4]))
@@ -177,13 +177,13 @@ func (obj *InitOpenOrders) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err
 func NewInitOpenOrdersInstruction(
 	// Accounts:
 	openOrders ag_solanago.PublicKey,
-	openOrdersOwner ag_solanago.PublicKey,
+	owner ag_solanago.PublicKey,
 	market ag_solanago.PublicKey,
 	rent ag_solanago.PublicKey,
 	marketAuthority ag_solanago.PublicKey) *InitOpenOrders {
 	return NewInitOpenOrdersInstructionBuilder().
 		SetOpenOrdersAccount(openOrders).
-		SetOpenOrdersOwnerAccount(openOrdersOwner).
+		SetOwnerAccount(owner).
 		SetMarketAccount(market).
 		SetRentAccount(rent).
 		SetMarketAuthorityAccount(marketAuthority)

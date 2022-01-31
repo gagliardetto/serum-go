@@ -30,7 +30,7 @@ type Prune struct {
 	// [4] = [WRITE] openOrders
 	// ··········· open orders.
 	//
-	// [5] = [] openOrdersOwner
+	// [5] = [] owner
 	// ··········· open orders owner.
 	//
 	// [6] = [WRITE] eventQueue
@@ -117,16 +117,16 @@ func (inst *Prune) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[4]
 }
 
-// SetOpenOrdersOwnerAccount sets the "openOrdersOwner" account.
+// SetOwnerAccount sets the "owner" account.
 // open orders owner.
-func (inst *Prune) SetOpenOrdersOwnerAccount(openOrdersOwner ag_solanago.PublicKey) *Prune {
-	inst.AccountMetaSlice[5] = ag_solanago.Meta(openOrdersOwner)
+func (inst *Prune) SetOwnerAccount(owner ag_solanago.PublicKey) *Prune {
+	inst.AccountMetaSlice[5] = ag_solanago.Meta(owner)
 	return inst
 }
 
-// GetOpenOrdersOwnerAccount gets the "openOrdersOwner" account.
+// GetOwnerAccount gets the "owner" account.
 // open orders owner.
-func (inst *Prune) GetOpenOrdersOwnerAccount() *ag_solanago.AccountMeta {
+func (inst *Prune) GetOwnerAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[5]
 }
 
@@ -186,7 +186,7 @@ func (inst *Prune) Validate() error {
 			return errors.New("accounts.OpenOrders is not set")
 		}
 		if inst.AccountMetaSlice[5] == nil {
-			return errors.New("accounts.OpenOrdersOwner is not set")
+			return errors.New("accounts.Owner is not set")
 		}
 		if inst.AccountMetaSlice[6] == nil {
 			return errors.New("accounts.EventQueue is not set")
@@ -210,13 +210,13 @@ func (inst *Prune) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=7]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("           bids", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("           asks", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta(" pruneAuthority", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("openOrdersOwner", inst.AccountMetaSlice[5]))
-						accountsBranch.Child(ag_format.Meta("     eventQueue", inst.AccountMetaSlice[6]))
+						accountsBranch.Child(ag_format.Meta("        market", inst.AccountMetaSlice[0]))
+						accountsBranch.Child(ag_format.Meta("          bids", inst.AccountMetaSlice[1]))
+						accountsBranch.Child(ag_format.Meta("          asks", inst.AccountMetaSlice[2]))
+						accountsBranch.Child(ag_format.Meta("pruneAuthority", inst.AccountMetaSlice[3]))
+						accountsBranch.Child(ag_format.Meta("    openOrders", inst.AccountMetaSlice[4]))
+						accountsBranch.Child(ag_format.Meta("         owner", inst.AccountMetaSlice[5]))
+						accountsBranch.Child(ag_format.Meta("    eventQueue", inst.AccountMetaSlice[6]))
 					})
 				})
 		})
@@ -249,7 +249,7 @@ func NewPruneInstruction(
 	asks ag_solanago.PublicKey,
 	pruneAuthority ag_solanago.PublicKey,
 	openOrders ag_solanago.PublicKey,
-	openOrdersOwner ag_solanago.PublicKey,
+	owner ag_solanago.PublicKey,
 	eventQueue ag_solanago.PublicKey) *Prune {
 	return NewPruneInstructionBuilder().
 		SetLimit(limit).
@@ -258,6 +258,6 @@ func NewPruneInstruction(
 		SetAsksAccount(asks).
 		SetPruneAuthorityAccount(pruneAuthority).
 		SetOpenOrdersAccount(openOrders).
-		SetOpenOrdersOwnerAccount(openOrdersOwner).
+		SetOwnerAccount(owner).
 		SetEventQueueAccount(eventQueue)
 }

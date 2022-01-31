@@ -27,7 +27,7 @@ type CancelOrderByClientIdV2 struct {
 	// [3] = [WRITE] openOrders
 	// ··········· OpenOrders
 	//
-	// [4] = [SIGNER] openOrdersOwner
+	// [4] = [SIGNER] owner
 	// ··········· the OpenOrders owner
 	//
 	// [5] = [WRITE] eventQueue
@@ -101,16 +101,16 @@ func (inst *CancelOrderByClientIdV2) GetOpenOrdersAccount() *ag_solanago.Account
 	return inst.AccountMetaSlice[3]
 }
 
-// SetOpenOrdersOwnerAccount sets the "openOrdersOwner" account.
+// SetOwnerAccount sets the "owner" account.
 // the OpenOrders owner
-func (inst *CancelOrderByClientIdV2) SetOpenOrdersOwnerAccount(openOrdersOwner ag_solanago.PublicKey) *CancelOrderByClientIdV2 {
-	inst.AccountMetaSlice[4] = ag_solanago.Meta(openOrdersOwner).SIGNER()
+func (inst *CancelOrderByClientIdV2) SetOwnerAccount(owner ag_solanago.PublicKey) *CancelOrderByClientIdV2 {
+	inst.AccountMetaSlice[4] = ag_solanago.Meta(owner).SIGNER()
 	return inst
 }
 
-// GetOpenOrdersOwnerAccount gets the "openOrdersOwner" account.
+// GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
-func (inst *CancelOrderByClientIdV2) GetOpenOrdersOwnerAccount() *ag_solanago.AccountMeta {
+func (inst *CancelOrderByClientIdV2) GetOwnerAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[4]
 }
 
@@ -167,7 +167,7 @@ func (inst *CancelOrderByClientIdV2) Validate() error {
 			return errors.New("accounts.OpenOrders is not set")
 		}
 		if inst.AccountMetaSlice[4] == nil {
-			return errors.New("accounts.OpenOrdersOwner is not set")
+			return errors.New("accounts.Owner is not set")
 		}
 		if inst.AccountMetaSlice[5] == nil {
 			return errors.New("accounts.EventQueue is not set")
@@ -191,12 +191,12 @@ func (inst *CancelOrderByClientIdV2) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=6]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("           bids", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("           asks", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("openOrdersOwner", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("     eventQueue", inst.AccountMetaSlice[5]))
+						accountsBranch.Child(ag_format.Meta("    market", inst.AccountMetaSlice[0]))
+						accountsBranch.Child(ag_format.Meta("      bids", inst.AccountMetaSlice[1]))
+						accountsBranch.Child(ag_format.Meta("      asks", inst.AccountMetaSlice[2]))
+						accountsBranch.Child(ag_format.Meta("openOrders", inst.AccountMetaSlice[3]))
+						accountsBranch.Child(ag_format.Meta("     owner", inst.AccountMetaSlice[4]))
+						accountsBranch.Child(ag_format.Meta("eventQueue", inst.AccountMetaSlice[5]))
 					})
 				})
 		})
@@ -228,7 +228,7 @@ func NewCancelOrderByClientIdV2Instruction(
 	bids ag_solanago.PublicKey,
 	asks ag_solanago.PublicKey,
 	openOrders ag_solanago.PublicKey,
-	openOrdersOwner ag_solanago.PublicKey,
+	owner ag_solanago.PublicKey,
 	eventQueue ag_solanago.PublicKey) *CancelOrderByClientIdV2 {
 	return NewCancelOrderByClientIdV2InstructionBuilder().
 		SetClientOrderId(client_order_id).
@@ -236,6 +236,6 @@ func NewCancelOrderByClientIdV2Instruction(
 		SetBidsAccount(bids).
 		SetAsksAccount(asks).
 		SetOpenOrdersAccount(openOrders).
-		SetOpenOrdersOwnerAccount(openOrdersOwner).
+		SetOwnerAccount(owner).
 		SetEventQueueAccount(eventQueue)
 }

@@ -20,7 +20,7 @@ type SettleFunds struct {
 	// [1] = [WRITE] openOrders
 	// ··········· OpenOrders
 	//
-	// [2] = [SIGNER] openOrdersOwner
+	// [2] = [SIGNER] owner
 	// ··········· the OpenOrders owner
 	//
 	// [3] = [WRITE] coinVault
@@ -80,16 +80,16 @@ func (inst *SettleFunds) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[1]
 }
 
-// SetOpenOrdersOwnerAccount sets the "openOrdersOwner" account.
+// SetOwnerAccount sets the "owner" account.
 // the OpenOrders owner
-func (inst *SettleFunds) SetOpenOrdersOwnerAccount(openOrdersOwner ag_solanago.PublicKey) *SettleFunds {
-	inst.AccountMetaSlice[2] = ag_solanago.Meta(openOrdersOwner).SIGNER()
+func (inst *SettleFunds) SetOwnerAccount(owner ag_solanago.PublicKey) *SettleFunds {
+	inst.AccountMetaSlice[2] = ag_solanago.Meta(owner).SIGNER()
 	return inst
 }
 
-// GetOpenOrdersOwnerAccount gets the "openOrdersOwner" account.
+// GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
-func (inst *SettleFunds) GetOpenOrdersOwnerAccount() *ag_solanago.AccountMeta {
+func (inst *SettleFunds) GetOwnerAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice[2]
 }
 
@@ -211,7 +211,7 @@ func (inst *SettleFunds) Validate() error {
 			return errors.New("accounts.OpenOrders is not set")
 		}
 		if inst.AccountMetaSlice[2] == nil {
-			return errors.New("accounts.OpenOrdersOwner is not set")
+			return errors.New("accounts.Owner is not set")
 		}
 		if inst.AccountMetaSlice[3] == nil {
 			return errors.New("accounts.CoinVault is not set")
@@ -253,7 +253,7 @@ func (inst *SettleFunds) EncodeToTree(parent ag_treeout.Branches) {
 					instructionBranch.Child("Accounts[len=10]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("          market", inst.AccountMetaSlice[0]))
 						accountsBranch.Child(ag_format.Meta("      openOrders", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta(" openOrdersOwner", inst.AccountMetaSlice[2]))
+						accountsBranch.Child(ag_format.Meta("           owner", inst.AccountMetaSlice[2]))
 						accountsBranch.Child(ag_format.Meta("       coinVault", inst.AccountMetaSlice[3]))
 						accountsBranch.Child(ag_format.Meta("         pcVault", inst.AccountMetaSlice[4]))
 						accountsBranch.Child(ag_format.Meta("      coinWallet", inst.AccountMetaSlice[5]))
@@ -278,7 +278,7 @@ func NewSettleFundsInstruction(
 	// Accounts:
 	market ag_solanago.PublicKey,
 	openOrders ag_solanago.PublicKey,
-	openOrdersOwner ag_solanago.PublicKey,
+	owner ag_solanago.PublicKey,
 	coinVault ag_solanago.PublicKey,
 	pcVault ag_solanago.PublicKey,
 	coinWallet ag_solanago.PublicKey,
@@ -289,7 +289,7 @@ func NewSettleFundsInstruction(
 	return NewSettleFundsInstructionBuilder().
 		SetMarketAccount(market).
 		SetOpenOrdersAccount(openOrders).
-		SetOpenOrdersOwnerAccount(openOrdersOwner).
+		SetOwnerAccount(owner).
 		SetCoinVaultAccount(coinVault).
 		SetPcVaultAccount(pcVault).
 		SetCoinWalletAccount(coinWallet).
