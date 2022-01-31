@@ -444,15 +444,15 @@ func (obj *SendTakeInstruction) UnmarshalWithDecoder(decoder *ag_binary.Decoder)
 type Side ag_binary.BorshEnum
 
 const (
-	Bid_Side Side = iota
-	Ask_Side
+	SideBid Side = iota
+	SideAsk
 )
 
 func (value Side) String() string {
 	switch value {
-	case Bid_Side:
+	case SideBid:
 		return "Bid"
-	case Ask_Side:
+	case SideAsk:
 		return "Ask"
 	default:
 		return ""
@@ -462,18 +462,18 @@ func (value Side) String() string {
 type OrderType ag_binary.BorshEnum
 
 const (
-	Limit_OrderType OrderType = iota
-	ImmediateOrCancel_OrderType
-	PostOnly_OrderType
+	OrderTypeLimit OrderType = iota
+	OrderTypeImmediateOrCancel
+	OrderTypePostOnly
 )
 
 func (value OrderType) String() string {
 	switch value {
-	case Limit_OrderType:
+	case OrderTypeLimit:
 		return "Limit"
-	case ImmediateOrCancel_OrderType:
+	case OrderTypeImmediateOrCancel:
 		return "ImmediateOrCancel"
-	case PostOnly_OrderType:
+	case OrderTypePostOnly:
 		return "PostOnly"
 	default:
 		return ""
@@ -483,18 +483,18 @@ func (value OrderType) String() string {
 type SelfTradeBehavior ag_binary.BorshEnum
 
 const (
-	DecrementTake_SelfTradeBehavior SelfTradeBehavior = iota
-	CancelProvide_SelfTradeBehavior
-	AbortTransaction_SelfTradeBehavior
+	SelfTradeBehaviorDecrementTake SelfTradeBehavior = iota
+	SelfTradeBehaviorCancelProvide
+	SelfTradeBehaviorAbortTransaction
 )
 
 func (value SelfTradeBehavior) String() string {
 	switch value {
-	case DecrementTake_SelfTradeBehavior:
+	case SelfTradeBehaviorDecrementTake:
 		return "DecrementTake"
-	case CancelProvide_SelfTradeBehavior:
+	case SelfTradeBehaviorCancelProvide:
 		return "CancelProvide"
-	case AbortTransaction_SelfTradeBehavior:
+	case SelfTradeBehaviorAbortTransaction:
 		return "AbortTransaction"
 	default:
 		return ""
@@ -504,33 +504,33 @@ func (value SelfTradeBehavior) String() string {
 type FeeTier ag_binary.BorshEnum
 
 const (
-	Base_FeeTier FeeTier = iota
-	SRM2_FeeTier
-	SRM3_FeeTier
-	SRM4_FeeTier
-	SRM5_FeeTier
-	SRM6_FeeTier
-	MSRM_FeeTier
-	Stable_FeeTier
+	FeeTierBase FeeTier = iota
+	FeeTierSRM2
+	FeeTierSRM3
+	FeeTierSRM4
+	FeeTierSRM5
+	FeeTierSRM6
+	FeeTierMSRM
+	FeeTierStable
 )
 
 func (value FeeTier) String() string {
 	switch value {
-	case Base_FeeTier:
+	case FeeTierBase:
 		return "Base"
-	case SRM2_FeeTier:
+	case FeeTierSRM2:
 		return "SRM2"
-	case SRM3_FeeTier:
+	case FeeTierSRM3:
 		return "SRM3"
-	case SRM4_FeeTier:
+	case FeeTierSRM4:
 		return "SRM4"
-	case SRM5_FeeTier:
+	case FeeTierSRM5:
 		return "SRM5"
-	case SRM6_FeeTier:
+	case FeeTierSRM6:
 		return "SRM6"
-	case MSRM_FeeTier:
+	case FeeTierMSRM:
 		return "MSRM"
-	case Stable_FeeTier:
+	case FeeTierStable:
 		return "Stable"
 	default:
 		return ""
