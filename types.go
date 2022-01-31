@@ -4,9 +4,9 @@ package serum_dex
 
 import (
 	"encoding/binary"
-	"fmt"
 
 	ag_binary "github.com/gagliardetto/binary"
+	bin "github.com/gagliardetto/binary"
 )
 
 type InitializeMarketInstruction struct {
@@ -93,7 +93,7 @@ type NewOrderInstructionV1 struct {
 
 func (obj NewOrderInstructionV1) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	// Serialize `Side` param:
-	err = encoder.Encode(obj.Side)
+	err = encoder.WriteUint32(uint32(obj.Side), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func (obj NewOrderInstructionV1) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 		return err
 	}
 	// Serialize `OrderType` param:
-	err = encoder.Encode(obj.OrderType)
+	err = encoder.WriteUint32(uint32(obj.OrderType), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -122,9 +122,12 @@ func (obj NewOrderInstructionV1) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 
 func (obj *NewOrderInstructionV1) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
 	// Deserialize `Side`:
-	err = decoder.Decode(&obj.Side)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.Side = Side(tmp)
 	}
 	// Deserialize `LimitPrice`:
 	err = decoder.Decode(&obj.LimitPrice)
@@ -137,9 +140,12 @@ func (obj *NewOrderInstructionV1) UnmarshalWithDecoder(decoder *ag_binary.Decode
 		return err
 	}
 	// Deserialize `OrderType`:
-	err = decoder.Decode(&obj.OrderType)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.OrderType = OrderType(tmp)
 	}
 	// Deserialize `ClientId`:
 	err = decoder.Decode(&obj.ClientId)
@@ -156,12 +162,7 @@ type CancelOrderInstructionV2 struct {
 
 func (obj CancelOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	// Serialize `Side` param:
-	err = encoder.Encode(obj.Side)
-	if err != nil {
-		return err
-	}
-	// TODO: what is this? Is obj.Side a u32?
-	err = encoder.WriteBytes([]byte{0, 0, 0}, false)
+	err = encoder.WriteUint32(uint32(obj.Side), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -175,22 +176,14 @@ func (obj CancelOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encode
 
 func (obj *CancelOrderInstructionV2) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
 	// Deserialize `Side`:
-	err = decoder.Decode(&obj.Side)
-	if err != nil {
-		return err
-	}
-	err = decoder.SkipBytes(3)
-	if err != nil {
-		return err
-	}
-	// Deserialize `OrderId`:
 	{
-		peeked, err := decoder.Peek(decoder.Remaining())
+		tmp, err := decoder.ReadUint32(bin.LE)
 		if err != nil {
 			return err
 		}
-		fmt.Println(ag_binary.FormatByteSlice(peeked))
+		obj.Side = Side(tmp)
 	}
+	// Deserialize `OrderId`:
 	obj.OrderId, err = decoder.ReadUint128(binary.LittleEndian)
 	if err != nil {
 		return err
@@ -209,7 +202,7 @@ type NewOrderInstructionV2 struct {
 
 func (obj NewOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	// Serialize `Side` param:
-	err = encoder.Encode(obj.Side)
+	err = encoder.WriteUint32(uint32(obj.Side), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -224,7 +217,7 @@ func (obj NewOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 		return err
 	}
 	// Serialize `OrderType` param:
-	err = encoder.Encode(obj.OrderType)
+	err = encoder.WriteUint32(uint32(obj.OrderType), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -234,7 +227,7 @@ func (obj NewOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 		return err
 	}
 	// Serialize `SelfTradeBehavior` param:
-	err = encoder.Encode(obj.SelfTradeBehavior)
+	err = encoder.WriteUint32(uint32(obj.SelfTradeBehavior), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -243,9 +236,12 @@ func (obj NewOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 
 func (obj *NewOrderInstructionV2) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
 	// Deserialize `Side`:
-	err = decoder.Decode(&obj.Side)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.Side = Side(tmp)
 	}
 	// Deserialize `LimitPrice`:
 	err = decoder.Decode(&obj.LimitPrice)
@@ -258,9 +254,12 @@ func (obj *NewOrderInstructionV2) UnmarshalWithDecoder(decoder *ag_binary.Decode
 		return err
 	}
 	// Deserialize `OrderType`:
-	err = decoder.Decode(&obj.OrderType)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.OrderType = OrderType(tmp)
 	}
 	// Deserialize `ClientId`:
 	err = decoder.Decode(&obj.ClientId)
@@ -268,9 +267,12 @@ func (obj *NewOrderInstructionV2) UnmarshalWithDecoder(decoder *ag_binary.Decode
 		return err
 	}
 	// Deserialize `SelfTradeBehavior`:
-	err = decoder.Decode(&obj.SelfTradeBehavior)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.SelfTradeBehavior = SelfTradeBehavior(tmp)
 	}
 	return nil
 }
@@ -288,7 +290,7 @@ type NewOrderInstructionV3 struct {
 
 func (obj NewOrderInstructionV3) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	// Serialize `Side` param:
-	err = encoder.Encode(obj.Side)
+	err = encoder.WriteUint32(uint32(obj.Side), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -308,12 +310,12 @@ func (obj NewOrderInstructionV3) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 		return err
 	}
 	// Serialize `SelfTradeBehavior` param:
-	err = encoder.Encode(obj.SelfTradeBehavior)
+	err = encoder.WriteUint32(uint32(obj.SelfTradeBehavior), bin.LE)
 	if err != nil {
 		return err
 	}
 	// Serialize `OrderType` param:
-	err = encoder.Encode(obj.OrderType)
+	err = encoder.WriteUint32(uint32(obj.OrderType), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -332,9 +334,12 @@ func (obj NewOrderInstructionV3) MarshalWithEncoder(encoder *ag_binary.Encoder) 
 
 func (obj *NewOrderInstructionV3) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
 	// Deserialize `Side`:
-	err = decoder.Decode(&obj.Side)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.Side = Side(tmp)
 	}
 	// Deserialize `LimitPrice`:
 	err = decoder.Decode(&obj.LimitPrice)
@@ -352,14 +357,20 @@ func (obj *NewOrderInstructionV3) UnmarshalWithDecoder(decoder *ag_binary.Decode
 		return err
 	}
 	// Deserialize `SelfTradeBehavior`:
-	err = decoder.Decode(&obj.SelfTradeBehavior)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.SelfTradeBehavior = SelfTradeBehavior(tmp)
 	}
 	// Deserialize `OrderType`:
-	err = decoder.Decode(&obj.OrderType)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.OrderType = OrderType(tmp)
 	}
 	// Deserialize `ClientOrderId`:
 	err = decoder.Decode(&obj.ClientOrderId)
@@ -386,7 +397,7 @@ type SendTakeInstruction struct {
 
 func (obj SendTakeInstruction) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
 	// Serialize `Side` param:
-	err = encoder.Encode(obj.Side)
+	err = encoder.WriteUint32(uint32(obj.Side), bin.LE)
 	if err != nil {
 		return err
 	}
@@ -425,9 +436,12 @@ func (obj SendTakeInstruction) MarshalWithEncoder(encoder *ag_binary.Encoder) (e
 
 func (obj *SendTakeInstruction) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
 	// Deserialize `Side`:
-	err = decoder.Decode(&obj.Side)
-	if err != nil {
-		return err
+	{
+		tmp, err := decoder.ReadUint32(bin.LE)
+		if err != nil {
+			return err
+		}
+		obj.Side = Side(tmp)
 	}
 	// Deserialize `LimitPrice`:
 	err = decoder.Decode(&obj.LimitPrice)
