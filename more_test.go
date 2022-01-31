@@ -3,6 +3,7 @@ package serum_dex
 import (
 	"encoding/base64"
 	"encoding/binary"
+	"os"
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
@@ -12,8 +13,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestInstructionDecode_CancelOrderV2(t *testing.T) {
+func TestMain(m *testing.M) {
 	SetProgramID(solana.MustPublicKeyFromBase58("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin"))
+	os.Exit(m.Run())
+}
+
+func TestInstructionDecode_CancelOrderV2(t *testing.T) {
 	CancelOrdersAndSettleMsg :=
 		"AQADDQpz5x/t0hNl7QruhPzk4rIGR/001ey9oRXwI9JjP4d4MZCYjBIPabdFGOFRg4aCuYIvpX0/Up2H0gsFDOvAKxptYTUM2" +
 			"1S5Es4XParbLdSX6tunfXUP9th1OPASGbtY2PiI2PpWo39ogKOkNY5k/Nfr0Wt/9KEDGrcUmrxuhRiSbi3T/D9J3OFx/jgQJR" +
@@ -106,7 +111,6 @@ func TestInstructionDecode_CancelOrderV2(t *testing.T) {
 }
 
 func TestInstructionDecode_CreateOpenOrdersNewOrdersAndSettleMsg(t *testing.T) {
-	// SetProgramID(solana.MustPublicKeyFromBase58("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin"))
 	CreateOpenOrdersNewOrdersAndSettleMsg :=
 		"AgAFEApz5x/t0hNl7QruhPzk4rIGR/001ey9oRXwI9JjP4d4bi3T/D9J3OFx/jgQJRQ+s2+9GBNxoSwkDUIUrgnJSVYxkJiME" +
 			"g9pt0UY4VGDhoK5gi+lfT9SnYfSCwUM68ArGpr33IM/qQm6+EFjv3WCl9+nICT59ibJWro20VS5uUQ9AjmsUEL3/a/D8mkZp5" +
@@ -170,5 +174,205 @@ func TestInstructionDecode_CreateOpenOrdersNewOrdersAndSettleMsg(t *testing.T) {
 		require.Equal(t, solana.MustPublicKeyFromBase58("BRvzjEjphBLVMMq8tEvh4G5o9TTNJ4PSu23CAAdJDKsr"), ix.GetRequestQueueAccount().PublicKey)
 		require.Equal(t, solana.MustPublicKeyFromBase58("9gpfTc4zsndJSdpnpXQbey16L5jW2GWcKeY3PLixqU4"), ix.GetEventQueueAccount().PublicKey)
 		require.Equal(t, solana.MustPublicKeyFromBase58("8MyQkxux1NnpNqpBbPeiQHYeDbZvdvs7CHmGpciSMWvs"), ix.GetBidsAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("HjB8zKe9xezDrgqXCSjCb5F7dMC9WMwtZoT7yKYEhZYV"), ix.GetAsksAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("tWQuevB8Rou1HS9a76fjYSQPrDixZMbVzXe2Q1kY5ma"), ix.GetOrderPayerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("3hUMPnn3WNUbhTBoyXH3wHkWyq85MEZx9LWLTdEEaTef"), ix.GetCoinVaultAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("HEArHmgm9mnsj2u98Ldr4iWSwWvPPUUg8L9fwxT1cTyv"), ix.GetPcVaultAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"), ix.GetSplTokenProgramAccount().PublicKey)
+		require.Equal(t, SideBid, ix.Args.Side)
+		spew.Dump(ix.Args)
+		require.Equal(t, uint64(3165), ix.Args.LimitPrice)
+		require.Equal(t, uint64(10), ix.Args.MaxCoinQty)
+		require.Equal(t, uint64(3165000), ix.Args.MaxNativePcQtyIncludingFees)
+		require.Equal(t, SelfTradeBehaviorCancelProvide, ix.Args.SelfTradeBehavior)
+		require.Equal(t, OrderTypeLimit, ix.Args.OrderType)
+	}
+	{
+		in := msg.Instructions[7]
+		inst, err := DecodeInstruction(in.ResolveInstructionAccounts(msg), in.Data)
+		require.NoError(t, err)
+
+		spew.Dump(inst)
+
+		ix, ok := inst.Impl.(*SettleFunds)
+		if !ok {
+			t.Errorf("the instruction is not a *SettleFunds")
+		}
+
+		require.Equal(t, solana.MustPublicKeyFromBase58("8R6NtLSyVpgG6f8Z9cLKFcuaJtt3mqHypKGsmRixwyJV"), ix.GetOpenOrdersAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh"), ix.GetOwnerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("4LUro5jaPaTurXK737QAxgJywdhABnFAMQkXX4ZyqqaZ"), ix.GetMarketAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("3hUMPnn3WNUbhTBoyXH3wHkWyq85MEZx9LWLTdEEaTef"), ix.GetCoinVaultAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("HEArHmgm9mnsj2u98Ldr4iWSwWvPPUUg8L9fwxT1cTyv"), ix.GetPcVaultAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"), ix.GetSplTokenProgramAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("CQgjkmuDXXJ2WpF6bK9VWZko9T5hwVxAVgvmbV3gkfVe"), ix.GetVaultSignerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("AraQPzSsE31pdzeTe6Dkvu6g8PvreFW429DAYhsfKYRd"), ix.GetCoinWalletAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("tWQuevB8Rou1HS9a76fjYSQPrDixZMbVzXe2Q1kY5ma"), ix.GetPcWalletAccount().PublicKey)
+	}
+}
+
+func TestInstructionDecode_CloseOpenOrdersMsg(t *testing.T) {
+	CloseOpenOrdersMsg :=
+		"AQACBApz5x/t0hNl7QruhPzk4rIGR/001ey9oRXwI9JjP4d4bi3T/D9J3OFx/jgQJRQ+s2+9GBNxoSwkDUIUrgnJSVYxkJiME" +
+			"g9pt0UY4VGDhoK5gi+lfT9SnYfSCwUM68ArGoUPLW4CpHr4JNCatp3ELXDLKMv6JJ+37le50lbBJ2LvRT/gXmftFbCh8k/tkX" +
+			"lqLbwaAlSoCOY59nR43pTxwWwBAwQBAAACBQAOAAAA"
+
+	data, err := base64.StdEncoding.DecodeString(CloseOpenOrdersMsg)
+	require.NoError(t, err)
+
+	msg := new(solana.Message)
+
+	err = msg.UnmarshalWithDecoder(bin.NewBorshDecoder(data))
+	require.NoError(t, err)
+	require.Equal(t, 1, len(msg.Instructions))
+
+	{
+		in := msg.Instructions[0]
+		inst, err := DecodeInstruction(in.ResolveInstructionAccounts(msg), in.Data)
+		require.NoError(t, err)
+
+		spew.Dump(inst)
+
+		ix, ok := inst.Impl.(*CloseOpenOrders)
+		if !ok {
+			t.Errorf("the instruction is not a *CloseOpenOrders")
+		}
+
+		require.Equal(t, solana.MustPublicKeyFromBase58("8R6NtLSyVpgG6f8Z9cLKFcuaJtt3mqHypKGsmRixwyJV"), ix.GetOpenOrdersAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh"), ix.GetOwnerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh"), ix.GetDestinationAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("4LUro5jaPaTurXK737QAxgJywdhABnFAMQkXX4ZyqqaZ"), ix.GetMarketAccount().PublicKey)
+	}
+}
+
+func TestInstructionDecode_InitOpenOrdersAuthorityMsg(t *testing.T) {
+	InitOpenOrdersAuthorityMsg :=
+		"AgEDBgpz5x/t0hNl7QruhPzk4rIGR/001ey9oRXwI9JjP4d43BTiskuLijN0Im9GJbaYltfYM7EWlK4B1p3CrtS9LytnTR0fu" +
+			"hJxv9yK2x3vBF9FKqGptmtvvRKj5Z2Yt80B+jGQmIwSD2m3RRjhUYOGgrmCL6V9P1Kdh9ILBQzrwCsaBqfVFxksXFEhjMlMPU" +
+			"rxf1ja7gibof1E49vZigAAAACFDy1uAqR6+CTQmradxC1wyyjL+iSft+5XudJWwSdi7zCsqcBb8R316Oq2E/s6bacxNqaZZYv" +
+			"YBqQrYp2V4ZVJAQUFAgADBAEFAA8AAAA="
+
+	data, err := base64.StdEncoding.DecodeString(InitOpenOrdersAuthorityMsg)
+	require.NoError(t, err)
+
+	msg := new(solana.Message)
+
+	err = msg.UnmarshalWithDecoder(bin.NewBorshDecoder(data))
+	require.NoError(t, err)
+	require.Equal(t, 1, len(msg.Instructions))
+
+	{
+		in := msg.Instructions[0]
+		inst, err := DecodeInstruction(in.ResolveInstructionAccounts(msg), in.Data)
+		require.NoError(t, err)
+
+		spew.Dump(inst)
+
+		ix, ok := inst.Impl.(*InitOpenOrders)
+		if !ok {
+			t.Errorf("the instruction is not a *InitOpenOrders")
+		}
+
+		require.Equal(t, solana.MustPublicKeyFromBase58("7xFCBA6F9xLg56hCMRBeDboJQUFNE5KHfjXGuFukavau"), ix.GetOpenOrdersAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh"), ix.GetOwnerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("4LUro5jaPaTurXK737QAxgJywdhABnFAMQkXX4ZyqqaZ"), ix.GetMarketAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("Fp7AZKKazcqU4N83opDzEZMTnQ6CtRxT118CGNZpziSe"), ix.GetMarketAuthorityAccount().PublicKey)
+	}
+}
+
+func TestInstructionDecode_CancelByClientIdAndConsumeEventsMsg(t *testing.T) {
+	CancelByClientIdAndConsumeEventsMsg :=
+		"AgABCQpz5x/t0hNl7QruhPzk4rIGR/001ey9oRXwI9JjP4d4AN+Ypnsy9CYUTPWS+d6mQ62AG7sIO9zzX4rvqJX0TU0xkJiME" +
+			"g9pt0UY4VGDhoK5gi+lfT9SnYfSCwUM68ArGm1hNQzbVLkSzhc9qtst1Jfq26d9dQ/22HU48BIZu1jY+IjY+lajf2iAo6Q1jm" +
+			"T81+vRa3/0oQMatxSavG6FGJICOaxQQvf9r8PyaRmnlkSN6BQs0u7SDcCOz4CLebCdaZJsaUup+JnjXJ8AAf8HKx949paxkKO" +
+			"e2znGSJJFNPXgDTHgtBNp84vnyAvrkVxNRBBpjT60T05B+sVW2BLmSnGFDy1uAqR6+CTQmradxC1wyyjL+iSft+5XudJWwSdi" +
+			"7zXpjGB3tXakV2utaBIsepEZdxt2dSrG41gLDbgqbkt4AggGAgMEAQAFDQAMAAAAoIYBAAAAAAAIBQECBQYHBwADAAAA//8="
+
+	data, err := base64.StdEncoding.DecodeString(CancelByClientIdAndConsumeEventsMsg)
+	require.NoError(t, err)
+
+	msg := new(solana.Message)
+
+	err = msg.UnmarshalWithDecoder(bin.NewBorshDecoder(data))
+	require.NoError(t, err)
+	require.Equal(t, 2, len(msg.Instructions))
+
+	{
+		in := msg.Instructions[0]
+		inst, err := DecodeInstruction(in.ResolveInstructionAccounts(msg), in.Data)
+		require.NoError(t, err)
+
+		spew.Dump(inst)
+
+		ix, ok := inst.Impl.(*CancelOrderByClientIdV2)
+		if !ok {
+			t.Errorf("the instruction is not a *CancelOrderByClientIdV2")
+		}
+
+		require.Equal(t, solana.MustPublicKeyFromBase58("14QkUy2jkZU2coqY8mTjL3uGiicTTng1VXrYKK1xk7yW"), ix.GetOpenOrdersAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh"), ix.GetOwnerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("4LUro5jaPaTurXK737QAxgJywdhABnFAMQkXX4ZyqqaZ"), ix.GetMarketAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("8MyQkxux1NnpNqpBbPeiQHYeDbZvdvs7CHmGpciSMWvs"), ix.GetBidsAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("HjB8zKe9xezDrgqXCSjCb5F7dMC9WMwtZoT7yKYEhZYV"), ix.GetAsksAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("9gpfTc4zsndJSdpnpXQbey16L5jW2GWcKeY3PLixqU4"), ix.GetEventQueueAccount().PublicKey)
+
+		require.Equal(t, uint64(100000), *ix.ClientOrderId)
+	}
+	{
+		in := msg.Instructions[1]
+		inst, err := DecodeInstruction(in.ResolveInstructionAccounts(msg), in.Data)
+		require.NoError(t, err)
+
+		spew.Dump(inst)
+
+		ix, ok := inst.Impl.(*ConsumeEvents)
+		if !ok {
+			t.Errorf("the instruction is not a *ConsumeEvents")
+		}
+
+		require.Equal(t, solana.MustPublicKeyFromBase58("4LUro5jaPaTurXK737QAxgJywdhABnFAMQkXX4ZyqqaZ"), ix.GetMarketAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("9gpfTc4zsndJSdpnpXQbey16L5jW2GWcKeY3PLixqU4"), ix.GetEventQueueAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("AraQPzSsE31pdzeTe6Dkvu6g8PvreFW429DAYhsfKYRd"), ix.GetCoinFeeReceivableAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("tWQuevB8Rou1HS9a76fjYSQPrDixZMbVzXe2Q1kY5ma"), ix.GetPcFeeReceivableAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("14QkUy2jkZU2coqY8mTjL3uGiicTTng1VXrYKK1xk7yW"), ix.GetOpenOrdersAccount().PublicKey)
+	}
+}
+
+func TestInstructionDecode_PruneMsg(t *testing.T) {
+	PruneMsg :=
+		"AgECCApz5x/t0hNl7QruhPzk4rIGR/001ey9oRXwI9JjP4d4uHiJfn+GplTj4talKGCSg9UtU/dYC8VBFhP5wi/VDboxkJiMEg" +
+			"9pt0UY4VGDhoK5gi+lfT9SnYfSCwUM68ArGm1hNQzbVLkSzhc9qtst1Jfq26d9dQ/22HU48BIZu1jY+IjY+lajf2iAo6Q1jmT8" +
+			"1+vRa3/0oQMatxSavG6FGJICOaxQQvf9r8PyaRmnlkSN6BQs0u7SDcCOz4CLebCdaQZjqIBBstRlvGKXFTn/swMxl19ZWB2KVy" +
+			"TAWVJDJv12hQ8tbgKkevgk0Jq2ncQtcMsoy/okn7fuV7nSVsEnYu9gYhiIP+KUcsxGrD3ryAixnmdYImbKDZVmwFIINIPFJgEH" +
+			"BwIDBAEGAAUHABAAAAD//w=="
+
+	data, err := base64.StdEncoding.DecodeString(PruneMsg)
+	require.NoError(t, err)
+
+	msg := new(solana.Message)
+
+	err = msg.UnmarshalWithDecoder(bin.NewBorshDecoder(data))
+	require.NoError(t, err)
+	require.Equal(t, 1, len(msg.Instructions))
+
+	{
+		in := msg.Instructions[0]
+		inst, err := DecodeInstruction(in.ResolveInstructionAccounts(msg), in.Data)
+		require.NoError(t, err)
+
+		spew.Dump(inst)
+
+		ix, ok := inst.Impl.(*Prune)
+		if !ok {
+			t.Errorf("the instruction is not a *Prune")
+		}
+
+		require.Equal(t, solana.MustPublicKeyFromBase58("4LUro5jaPaTurXK737QAxgJywdhABnFAMQkXX4ZyqqaZ"), ix.GetMarketAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("8MyQkxux1NnpNqpBbPeiQHYeDbZvdvs7CHmGpciSMWvs"), ix.GetBidsAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("HjB8zKe9xezDrgqXCSjCb5F7dMC9WMwtZoT7yKYEhZYV"), ix.GetAsksAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("9gpfTc4zsndJSdpnpXQbey16L5jW2GWcKeY3PLixqU4"), ix.GetEventQueueAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("hoakwpFB8UoLnPpLC56gsjpY7XbVwaCuRQRMQzN5TVh"), ix.GetOwnerAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("RwatxRLAiLNqjzBxB8hWXArgtJ7G84zq7xxoYnrUzZB"), ix.GetOpenOrdersAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("DR6cxg8D7dXYhtCfuMqBmQFSTRAgcYXUd9SZK7dFgsD3"), ix.GetPruneAuthorityAccount().PublicKey)
 	}
 }
