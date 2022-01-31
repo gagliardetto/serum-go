@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -336,7 +337,9 @@ func (inst *NewOrderV3) EncodeToTree(parent ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("        pcVault", inst.AccountMetaSlice[9]))
 						accountsBranch.Child(ag_format.Meta("splTokenProgram", inst.AccountMetaSlice[10]))
 						accountsBranch.Child(ag_format.Meta("     rentSysvar", inst.AccountMetaSlice[11]))
-						accountsBranch.Child(ag_format.Meta("   feeDiscounts", inst.AccountMetaSlice[12]))
+						if len(inst.AccountMetaSlice) > 12 {
+							accountsBranch.Child(ag_format.Meta("   feeDiscounts", inst.AccountMetaSlice[12]))
+						}
 					})
 				})
 		})

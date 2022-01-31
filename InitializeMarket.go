@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -332,9 +333,15 @@ func (inst *InitializeMarket) EncodeToTree(parent ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("         coinCurrencyMint", inst.AccountMetaSlice[7]))
 						accountsBranch.Child(ag_format.Meta("        priceCurrencyMint", inst.AccountMetaSlice[8]))
 						accountsBranch.Child(ag_format.Meta("               rentSysvar", inst.AccountMetaSlice[9]))
-						accountsBranch.Child(ag_format.Meta("openOrdersMarketAuthority", inst.AccountMetaSlice[10]))
-						accountsBranch.Child(ag_format.Meta("           pruneAuthority", inst.AccountMetaSlice[11]))
-						accountsBranch.Child(ag_format.Meta("           crankAuthority", inst.AccountMetaSlice[12]))
+						if len(inst.AccountMetaSlice) > 10 {
+							accountsBranch.Child(ag_format.Meta("openOrdersMarketAuthority", inst.AccountMetaSlice[10]))
+						}
+						if len(inst.AccountMetaSlice) > 11 {
+							accountsBranch.Child(ag_format.Meta("           pruneAuthority", inst.AccountMetaSlice[11]))
+						}
+						if len(inst.AccountMetaSlice) > 12 {
+							accountsBranch.Child(ag_format.Meta("           crankAuthority", inst.AccountMetaSlice[12]))
+						}
 					})
 				})
 		})

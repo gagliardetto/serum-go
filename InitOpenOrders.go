@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -160,7 +161,9 @@ func (inst *InitOpenOrders) EncodeToTree(parent ag_treeout.Branches) {
 						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice[1]))
 						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice[2]))
 						accountsBranch.Child(ag_format.Meta("           rent", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("marketAuthority", inst.AccountMetaSlice[4]))
+						if len(inst.AccountMetaSlice) > 4 {
+							accountsBranch.Child(ag_format.Meta("marketAuthority", inst.AccountMetaSlice[4]))
+						}
 					})
 				})
 		})
