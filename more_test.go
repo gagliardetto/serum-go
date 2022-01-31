@@ -1,5 +1,9 @@
 package serum_dex
 
+// NOTE: Special thanks to https://github.com/murlokito for writing and letting me port
+// the instruction decoder tests from https://github.com/bmresearch/Solnet.Serum/blob/master/Solnet.Serum.Test/InstructionDecoderTest.cs
+// Without him, I wouldn't have caught a few bugs here.
+
 import (
 	"encoding/base64"
 	"encoding/binary"
@@ -50,7 +54,6 @@ func TestInstructionDecode_CancelOrderV2(t *testing.T) {
 	if !ok {
 		t.Errorf("the instruction is not a *CancelOrderV2")
 	}
-	_ = ix
 
 	require.NotNil(t, ix.GetOpenOrdersAccount())
 	require.NotNil(t, ix.GetOwnerAccount())
