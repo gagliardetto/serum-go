@@ -4,10 +4,11 @@ package serum_dex
 
 import (
 	"bytes"
-	ag_gofuzz "github.com/gagliardetto/gofuzz"
-	ag_require "github.com/stretchr/testify/require"
 	"strconv"
 	"testing"
+
+	ag_gofuzz "github.com/gagliardetto/gofuzz"
+	ag_require "github.com/stretchr/testify/require"
 )
 
 func TestEncodeDecode_ConsumeEvents(t *testing.T) {
@@ -17,14 +18,16 @@ func TestEncodeDecode_ConsumeEvents(t *testing.T) {
 			{
 				params := new(ConsumeEvents)
 				fu.Fuzz(params)
-				params.AccountMetaSlice = nil
+				params.OpenOrders = nil
+				params.OtherAccounts = nil
 				buf := new(bytes.Buffer)
 				err := encodeT(*params, buf)
 				ag_require.NoError(t, err)
 				//
 				got := new(ConsumeEvents)
 				err = decodeT(got, buf.Bytes())
-				got.AccountMetaSlice = nil
+				got.OpenOrders = nil
+				got.OtherAccounts = nil
 				ag_require.NoError(t, err)
 				ag_require.Equal(t, params, got)
 			}

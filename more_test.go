@@ -337,7 +337,7 @@ func TestInstructionDecode_CancelByClientIdAndConsumeEventsMsg(t *testing.T) {
 		require.Equal(t, solana.MustPublicKeyFromBase58("9gpfTc4zsndJSdpnpXQbey16L5jW2GWcKeY3PLixqU4"), ix.GetEventQueueAccount().PublicKey)
 		require.Equal(t, solana.MustPublicKeyFromBase58("AraQPzSsE31pdzeTe6Dkvu6g8PvreFW429DAYhsfKYRd"), ix.GetCoinFeeReceivableAccount().PublicKey)
 		require.Equal(t, solana.MustPublicKeyFromBase58("tWQuevB8Rou1HS9a76fjYSQPrDixZMbVzXe2Q1kY5ma"), ix.GetPcFeeReceivableAccount().PublicKey)
-		require.Equal(t, solana.MustPublicKeyFromBase58("14QkUy2jkZU2coqY8mTjL3uGiicTTng1VXrYKK1xk7yW"), ix.GetOpenOrdersAccount().PublicKey)
+		require.Equal(t, solana.MustPublicKeyFromBase58("14QkUy2jkZU2coqY8mTjL3uGiicTTng1VXrYKK1xk7yW"), ix.GetOpenOrdersAccounts()[0].PublicKey)
 	}
 }
 

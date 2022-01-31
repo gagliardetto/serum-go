@@ -5,8 +5,10 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
+	"github.com/gagliardetto/solana-go/text"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
 	ag_treeout "github.com/gagliardetto/treeout"
 )
@@ -15,25 +17,47 @@ import (
 type ConsumeEvents struct {
 	Limit *uint16
 
-	// [0] = [WRITE] openOrders
-	// ··········· OpenOrders; TODO: this is an array of accounts
+	// [...] = [WRITE] openOrders
+	// ··········· OpenOrders;
+	OpenOrders ag_solanago.AccountMetaSlice `bin:"-"`
 	//
-	// [1] = [WRITE] market
+	// [0] = [WRITE] market
 	// ··········· market
 	//
-	// [2] = [WRITE] eventQueue
+	// [1] = [WRITE] eventQueue
 	// ··········· event queue
 	//
-	// [3] = [WRITE] coinFeeReceivable
+	// [2] = [WRITE] coinFeeReceivable
 	//
-	// [4] = [WRITE] pcFeeReceivable
-	ag_solanago.AccountMetaSlice `bin:"-"`
+	// [3] = [WRITE] pcFeeReceivable
+	OtherAccounts ag_solanago.AccountMetaSlice `bin:"-"`
+}
+
+var _ ag_solanago.AccountsSettable = new(ConsumeEvents)
+var _ ag_solanago.AccountsGettable = new(ConsumeEvents)
+
+func (accs *ConsumeEvents) SetAccounts(accounts []*ag_solanago.AccountMeta) error {
+	l := len(accounts)
+	switch {
+	case l <= 4:
+		return accs.OtherAccounts.SetAccounts(accounts)
+	default:
+		accs.OpenOrders, accs.OtherAccounts = ag_solanago.AccountMetaSlice(accounts).SplitFrom(len(accounts) - 4)
+	}
+	return nil
+}
+
+func (accs *ConsumeEvents) GetAccounts() (out []*ag_solanago.AccountMeta) {
+	out = append(out, accs.OpenOrders.GetAccounts()...)
+	out = append(out, accs.OtherAccounts.GetAccounts()...)
+	return
 }
 
 // NewConsumeEventsInstructionBuilder creates a new `ConsumeEvents` instruction builder.
 func NewConsumeEventsInstructionBuilder() *ConsumeEvents {
 	nd := &ConsumeEvents{
-		AccountMetaSlice: make(ag_solanago.AccountMetaSlice, 5),
+		OpenOrders:    make(ag_solanago.AccountMetaSlice, 0),
+		OtherAccounts: make(ag_solanago.AccountMetaSlice, 4),
 	}
 	return nd
 }
@@ -44,65 +68,65 @@ func (inst *ConsumeEvents) SetLimit(limit uint16) *ConsumeEvents {
 	return inst
 }
 
-// SetOpenOrdersAccount sets the "openOrders" account.
-// OpenOrders; TODO: this is an array of accounts
-func (inst *ConsumeEvents) SetOpenOrdersAccount(openOrders ag_solanago.PublicKey) *ConsumeEvents {
-	inst.AccountMetaSlice[0] = ag_solanago.Meta(openOrders).WRITE()
+// SetOpenOrdersAccount sets the "openOrders" accounts.
+func (inst *ConsumeEvents) SetOpenOrdersAccounts(openOrders ...ag_solanago.PublicKey) *ConsumeEvents {
+	for _, account := range openOrders {
+		inst.OpenOrders.Append(ag_solanago.Meta(account).WRITE())
+	}
 	return inst
 }
 
-// GetOpenOrdersAccount gets the "openOrders" account.
-// OpenOrders; TODO: this is an array of accounts
-func (inst *ConsumeEvents) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+// GetOpenOrdersAccount gets the "openOrders" accounts.
+func (inst *ConsumeEvents) GetOpenOrdersAccounts() ag_solanago.AccountMetaSlice {
+	return inst.OpenOrders
 }
 
 // SetMarketAccount sets the "market" account.
 // market
 func (inst *ConsumeEvents) SetMarketAccount(market ag_solanago.PublicKey) *ConsumeEvents {
-	inst.AccountMetaSlice[1] = ag_solanago.Meta(market).WRITE()
+	inst.OtherAccounts[0] = ag_solanago.Meta(market).WRITE()
 	return inst
 }
 
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *ConsumeEvents) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.OtherAccounts[0]
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
 // event queue
 func (inst *ConsumeEvents) SetEventQueueAccount(eventQueue ag_solanago.PublicKey) *ConsumeEvents {
-	inst.AccountMetaSlice[2] = ag_solanago.Meta(eventQueue).WRITE()
+	inst.OtherAccounts[1] = ag_solanago.Meta(eventQueue).WRITE()
 	return inst
 }
 
 // GetEventQueueAccount gets the "eventQueue" account.
 // event queue
 func (inst *ConsumeEvents) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.OtherAccounts[1]
 }
 
 // SetCoinFeeReceivableAccount sets the "coinFeeReceivable" account.
 func (inst *ConsumeEvents) SetCoinFeeReceivableAccount(coinFeeReceivable ag_solanago.PublicKey) *ConsumeEvents {
-	inst.AccountMetaSlice[3] = ag_solanago.Meta(coinFeeReceivable).WRITE()
+	inst.OtherAccounts[2] = ag_solanago.Meta(coinFeeReceivable).WRITE()
 	return inst
 }
 
 // GetCoinFeeReceivableAccount gets the "coinFeeReceivable" account.
 func (inst *ConsumeEvents) GetCoinFeeReceivableAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.OtherAccounts[2]
 }
 
 // SetPcFeeReceivableAccount sets the "pcFeeReceivable" account.
 func (inst *ConsumeEvents) SetPcFeeReceivableAccount(pcFeeReceivable ag_solanago.PublicKey) *ConsumeEvents {
-	inst.AccountMetaSlice[4] = ag_solanago.Meta(pcFeeReceivable).WRITE()
+	inst.OtherAccounts[3] = ag_solanago.Meta(pcFeeReceivable).WRITE()
 	return inst
 }
 
 // GetPcFeeReceivableAccount gets the "pcFeeReceivable" account.
 func (inst *ConsumeEvents) GetPcFeeReceivableAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.OtherAccounts[3]
 }
 
 func (inst ConsumeEvents) Build() *Instruction {
@@ -132,19 +156,20 @@ func (inst *ConsumeEvents) Validate() error {
 
 	// Check whether all (required) accounts are set:
 	{
-		if inst.AccountMetaSlice[0] == nil {
-			return errors.New("accounts.OpenOrders is not set")
+		if inst.OpenOrders.Len() == 0 {
+			// TODO: is there a minimum?
+			// return errors.New("accounts.OpenOrders is not set")
 		}
-		if inst.AccountMetaSlice[1] == nil {
+		if inst.OtherAccounts[0] == nil {
 			return errors.New("accounts.Market is not set")
 		}
-		if inst.AccountMetaSlice[2] == nil {
+		if inst.OtherAccounts[1] == nil {
 			return errors.New("accounts.EventQueue is not set")
 		}
-		if inst.AccountMetaSlice[3] == nil {
+		if inst.OtherAccounts[2] == nil {
 			return errors.New("accounts.CoinFeeReceivable is not set")
 		}
-		if inst.AccountMetaSlice[4] == nil {
+		if inst.OtherAccounts[3] == nil {
 			return errors.New("accounts.PcFeeReceivable is not set")
 		}
 	}
@@ -164,13 +189,18 @@ func (inst *ConsumeEvents) EncodeToTree(parent ag_treeout.Branches) {
 						paramsBranch.Child(ag_format.Param("Limit", *inst.Limit))
 					})
 
+					instructionBranch.Child(text.Sf("OpenOrderAccount[len=%v]", len(inst.OpenOrders))).ParentFunc(func(accountsBranch ag_treeout.Branches) {
+						for i := range inst.OpenOrders {
+							accountsBranch.Child(ag_format.Meta(text.Sf("openOrders[%v]", i), inst.OpenOrders[i]))
+						}
+					})
+
 					// Accounts of the instruction:
-					instructionBranch.Child("Accounts[len=5]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("       openOrders", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("           market", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("       eventQueue", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("coinFeeReceivable", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("  pcFeeReceivable", inst.AccountMetaSlice[4]))
+					instructionBranch.Child("OtherAccounts[len=4]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
+						accountsBranch.Child(ag_format.Meta("           market", inst.OtherAccounts[0]))
+						accountsBranch.Child(ag_format.Meta("       eventQueue", inst.OtherAccounts[1]))
+						accountsBranch.Child(ag_format.Meta("coinFeeReceivable", inst.OtherAccounts[2]))
+						accountsBranch.Child(ag_format.Meta("  pcFeeReceivable", inst.OtherAccounts[3]))
 					})
 				})
 		})
@@ -198,14 +228,14 @@ func NewConsumeEventsInstruction(
 	// Parameters:
 	limit uint16,
 	// Accounts:
-	openOrders ag_solanago.PublicKey,
+	openOrders []ag_solanago.PublicKey,
 	market ag_solanago.PublicKey,
 	eventQueue ag_solanago.PublicKey,
 	coinFeeReceivable ag_solanago.PublicKey,
 	pcFeeReceivable ag_solanago.PublicKey) *ConsumeEvents {
 	return NewConsumeEventsInstructionBuilder().
 		SetLimit(limit).
-		SetOpenOrdersAccount(openOrders).
+		SetOpenOrdersAccounts(openOrders...).
 		SetMarketAccount(market).
 		SetEventQueueAccount(eventQueue).
 		SetCoinFeeReceivableAccount(coinFeeReceivable).
