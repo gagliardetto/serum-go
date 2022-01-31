@@ -2,7 +2,12 @@
 
 package serum_dex
 
-import ag_binary "github.com/gagliardetto/binary"
+import (
+	"encoding/binary"
+	"fmt"
+
+	ag_binary "github.com/gagliardetto/binary"
+)
 
 type InitializeMarketInstruction struct {
 	// In the matching engine, all prices and balances are integers.
@@ -155,6 +160,11 @@ func (obj CancelOrderInstructionV2) MarshalWithEncoder(encoder *ag_binary.Encode
 	if err != nil {
 		return err
 	}
+	// TODO: what is this? Is obj.Side a u32?
+	err = encoder.WriteBytes([]byte{0, 0, 0}, false)
+	if err != nil {
+		return err
+	}
 	// Serialize `OrderId` param:
 	err = encoder.Encode(obj.OrderId)
 	if err != nil {
@@ -169,8 +179,19 @@ func (obj *CancelOrderInstructionV2) UnmarshalWithDecoder(decoder *ag_binary.Dec
 	if err != nil {
 		return err
 	}
+	err = decoder.SkipBytes(3)
+	if err != nil {
+		return err
+	}
 	// Deserialize `OrderId`:
-	err = decoder.Decode(&obj.OrderId)
+	{
+		peeked, err := decoder.Peek(decoder.Remaining())
+		if err != nil {
+			return err
+		}
+		fmt.Println(ag_binary.FormatByteSlice(peeked))
+	}
+	obj.OrderId, err = decoder.ReadUint128(binary.LittleEndian)
 	if err != nil {
 		return err
 	}
