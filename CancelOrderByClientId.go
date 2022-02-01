@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -53,7 +54,7 @@ func (inst *CancelOrderByClientId) SetMarketAccount(market ag_solanago.PublicKey
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *CancelOrderByClientId) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetOpenOrdersAccount sets the "openOrders" account.
@@ -66,7 +67,7 @@ func (inst *CancelOrderByClientId) SetOpenOrdersAccount(openOrders ag_solanago.P
 // GetOpenOrdersAccount gets the "openOrders" account.
 // OpenOrders
 func (inst *CancelOrderByClientId) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetRequestQueueAccount sets the "requestQueue" account.
@@ -79,7 +80,7 @@ func (inst *CancelOrderByClientId) SetRequestQueueAccount(requestQueue ag_solana
 // GetRequestQueueAccount gets the "requestQueue" account.
 // the request queue
 func (inst *CancelOrderByClientId) GetRequestQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -92,7 +93,7 @@ func (inst *CancelOrderByClientId) SetOwnerAccount(owner ag_solanago.PublicKey) 
 // GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
 func (inst *CancelOrderByClientId) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 func (inst CancelOrderByClientId) Build() *Instruction {
@@ -153,10 +154,10 @@ func (inst *CancelOrderByClientId) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=4]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("      market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("  openOrders", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("requestQueue", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("       owner", inst.AccountMetaSlice[3]))
+						accountsBranch.Child(ag_format.Meta("      market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("  openOrders", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("requestQueue", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("       owner", inst.AccountMetaSlice.Get(3)))
 					})
 				})
 		})

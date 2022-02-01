@@ -91,7 +91,7 @@ func (inst *ConsumeEvents) SetMarketAccount(market ag_solanago.PublicKey) *Consu
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *ConsumeEvents) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[0]
+	return inst.OtherAccounts.Get(0)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -104,7 +104,7 @@ func (inst *ConsumeEvents) SetEventQueueAccount(eventQueue ag_solanago.PublicKey
 // GetEventQueueAccount gets the "eventQueue" account.
 // event queue
 func (inst *ConsumeEvents) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[1]
+	return inst.OtherAccounts.Get(1)
 }
 
 // SetCoinFeeReceivableAccount sets the "coinFeeReceivable" account.
@@ -115,7 +115,7 @@ func (inst *ConsumeEvents) SetCoinFeeReceivableAccount(coinFeeReceivable ag_sola
 
 // GetCoinFeeReceivableAccount gets the "coinFeeReceivable" account.
 func (inst *ConsumeEvents) GetCoinFeeReceivableAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[2]
+	return inst.OtherAccounts.Get(2)
 }
 
 // SetPcFeeReceivableAccount sets the "pcFeeReceivable" account.
@@ -126,7 +126,7 @@ func (inst *ConsumeEvents) SetPcFeeReceivableAccount(pcFeeReceivable ag_solanago
 
 // GetPcFeeReceivableAccount gets the "pcFeeReceivable" account.
 func (inst *ConsumeEvents) GetPcFeeReceivableAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[3]
+	return inst.OtherAccounts.Get(3)
 }
 
 func (inst ConsumeEvents) Build() *Instruction {
@@ -197,10 +197,10 @@ func (inst *ConsumeEvents) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("OtherAccounts[len=4]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("           market", inst.OtherAccounts[0]))
-						accountsBranch.Child(ag_format.Meta("       eventQueue", inst.OtherAccounts[1]))
-						accountsBranch.Child(ag_format.Meta("coinFeeReceivable", inst.OtherAccounts[2]))
-						accountsBranch.Child(ag_format.Meta("  pcFeeReceivable", inst.OtherAccounts[3]))
+						accountsBranch.Child(ag_format.Meta("           market", inst.OtherAccounts.Get(0)))
+						accountsBranch.Child(ag_format.Meta("       eventQueue", inst.OtherAccounts.Get(1)))
+						accountsBranch.Child(ag_format.Meta("coinFeeReceivable", inst.OtherAccounts.Get(2)))
+						accountsBranch.Child(ag_format.Meta("  pcFeeReceivable", inst.OtherAccounts.Get(3)))
 					})
 				})
 		})

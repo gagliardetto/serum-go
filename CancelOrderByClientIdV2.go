@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -59,7 +60,7 @@ func (inst *CancelOrderByClientIdV2) SetMarketAccount(market ag_solanago.PublicK
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *CancelOrderByClientIdV2) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetBidsAccount sets the "bids" account.
@@ -72,7 +73,7 @@ func (inst *CancelOrderByClientIdV2) SetBidsAccount(bids ag_solanago.PublicKey) 
 // GetBidsAccount gets the "bids" account.
 // bids
 func (inst *CancelOrderByClientIdV2) GetBidsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetAsksAccount sets the "asks" account.
@@ -85,7 +86,7 @@ func (inst *CancelOrderByClientIdV2) SetAsksAccount(asks ag_solanago.PublicKey) 
 // GetAsksAccount gets the "asks" account.
 // asks
 func (inst *CancelOrderByClientIdV2) GetAsksAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetOpenOrdersAccount sets the "openOrders" account.
@@ -98,7 +99,7 @@ func (inst *CancelOrderByClientIdV2) SetOpenOrdersAccount(openOrders ag_solanago
 // GetOpenOrdersAccount gets the "openOrders" account.
 // OpenOrders
 func (inst *CancelOrderByClientIdV2) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -111,7 +112,7 @@ func (inst *CancelOrderByClientIdV2) SetOwnerAccount(owner ag_solanago.PublicKey
 // GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
 func (inst *CancelOrderByClientIdV2) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -124,7 +125,7 @@ func (inst *CancelOrderByClientIdV2) SetEventQueueAccount(eventQueue ag_solanago
 // GetEventQueueAccount gets the "eventQueue" account.
 // event_q
 func (inst *CancelOrderByClientIdV2) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 func (inst CancelOrderByClientIdV2) Build() *Instruction {
@@ -191,12 +192,12 @@ func (inst *CancelOrderByClientIdV2) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=6]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("    market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("      bids", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("      asks", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("openOrders", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("     owner", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("eventQueue", inst.AccountMetaSlice[5]))
+						accountsBranch.Child(ag_format.Meta("    market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("      bids", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("      asks", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("openOrders", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("     owner", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta("eventQueue", inst.AccountMetaSlice.Get(5)))
 					})
 				})
 		})

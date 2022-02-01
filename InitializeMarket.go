@@ -81,7 +81,7 @@ func (inst *InitializeMarket) SetMarketToInitializeAccount(marketToInitialize ag
 // GetMarketToInitializeAccount gets the "marketToInitialize" account.
 // the market to initialize
 func (inst *InitializeMarket) GetMarketToInitializeAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetRequestQueueAccount sets the "requestQueue" account.
@@ -94,7 +94,7 @@ func (inst *InitializeMarket) SetRequestQueueAccount(requestQueue ag_solanago.Pu
 // GetRequestQueueAccount gets the "requestQueue" account.
 // zeroed out request queue
 func (inst *InitializeMarket) GetRequestQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -107,7 +107,7 @@ func (inst *InitializeMarket) SetEventQueueAccount(eventQueue ag_solanago.Public
 // GetEventQueueAccount gets the "eventQueue" account.
 // zeroed out event queue
 func (inst *InitializeMarket) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetBidsAccount sets the "bids" account.
@@ -120,7 +120,7 @@ func (inst *InitializeMarket) SetBidsAccount(bids ag_solanago.PublicKey) *Initia
 // GetBidsAccount gets the "bids" account.
 // zeroed out bids
 func (inst *InitializeMarket) GetBidsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetAsksAccount sets the "asks" account.
@@ -133,7 +133,7 @@ func (inst *InitializeMarket) SetAsksAccount(asks ag_solanago.PublicKey) *Initia
 // GetAsksAccount gets the "asks" account.
 // zeroed out asks
 func (inst *InitializeMarket) GetAsksAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetSplTokenAccountCoinAccount sets the "splTokenAccountCoin" account.
@@ -146,7 +146,7 @@ func (inst *InitializeMarket) SetSplTokenAccountCoinAccount(splTokenAccountCoin 
 // GetSplTokenAccountCoinAccount gets the "splTokenAccountCoin" account.
 // spl-token account for the coin currency
 func (inst *InitializeMarket) GetSplTokenAccountCoinAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 // SetSplTokenAccountPriceAccount sets the "splTokenAccountPrice" account.
@@ -159,7 +159,7 @@ func (inst *InitializeMarket) SetSplTokenAccountPriceAccount(splTokenAccountPric
 // GetSplTokenAccountPriceAccount gets the "splTokenAccountPrice" account.
 // spl-token account for the price currency
 func (inst *InitializeMarket) GetSplTokenAccountPriceAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[6]
+	return inst.AccountMetaSlice.Get(6)
 }
 
 // SetCoinCurrencyMintAccount sets the "coinCurrencyMint" account.
@@ -172,7 +172,7 @@ func (inst *InitializeMarket) SetCoinCurrencyMintAccount(coinCurrencyMint ag_sol
 // GetCoinCurrencyMintAccount gets the "coinCurrencyMint" account.
 // coin currency Mint
 func (inst *InitializeMarket) GetCoinCurrencyMintAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[7]
+	return inst.AccountMetaSlice.Get(7)
 }
 
 // SetPriceCurrencyMintAccount sets the "priceCurrencyMint" account.
@@ -185,7 +185,7 @@ func (inst *InitializeMarket) SetPriceCurrencyMintAccount(priceCurrencyMint ag_s
 // GetPriceCurrencyMintAccount gets the "priceCurrencyMint" account.
 // price currency Mint
 func (inst *InitializeMarket) GetPriceCurrencyMintAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[8]
+	return inst.AccountMetaSlice.Get(8)
 }
 
 // SetRentSysvarAccount sets the "rentSysvar" account.
@@ -198,7 +198,7 @@ func (inst *InitializeMarket) SetRentSysvarAccount(rentSysvar ag_solanago.Public
 // GetRentSysvarAccount gets the "rentSysvar" account.
 // the rent sysvar
 func (inst *InitializeMarket) GetRentSysvarAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[9]
+	return inst.AccountMetaSlice.Get(9)
 }
 
 // SetOpenOrdersMarketAuthorityAccount sets the "openOrdersMarketAuthority" account.
@@ -211,7 +211,7 @@ func (inst *InitializeMarket) SetOpenOrdersMarketAuthorityAccount(openOrdersMark
 // GetOpenOrdersMarketAuthorityAccount gets the "openOrdersMarketAuthority" account.
 // open orders market authority (optional)
 func (inst *InitializeMarket) GetOpenOrdersMarketAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[10]
+	return inst.AccountMetaSlice.Get(10)
 }
 
 // SetPruneAuthorityAccount sets the "pruneAuthority" account.
@@ -224,7 +224,7 @@ func (inst *InitializeMarket) SetPruneAuthorityAccount(pruneAuthority ag_solanag
 // GetPruneAuthorityAccount gets the "pruneAuthority" account.
 // prune authority (optional, requires open orders market authority)
 func (inst *InitializeMarket) GetPruneAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[11]
+	return inst.AccountMetaSlice.Get(11)
 }
 
 // SetCrankAuthorityAccount sets the "crankAuthority" account.
@@ -237,7 +237,7 @@ func (inst *InitializeMarket) SetCrankAuthorityAccount(crankAuthority ag_solanag
 // GetCrankAuthorityAccount gets the "crankAuthority" account.
 // crank authority (optional, requires prune authority)
 func (inst *InitializeMarket) GetCrankAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[12]
+	return inst.AccountMetaSlice.Get(12)
 }
 
 func (inst InitializeMarket) Build() *Instruction {
@@ -323,25 +323,19 @@ func (inst *InitializeMarket) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=13]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("       marketToInitialize", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("             requestQueue", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("               eventQueue", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("                     bids", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("                     asks", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("      splTokenAccountCoin", inst.AccountMetaSlice[5]))
-						accountsBranch.Child(ag_format.Meta("     splTokenAccountPrice", inst.AccountMetaSlice[6]))
-						accountsBranch.Child(ag_format.Meta("         coinCurrencyMint", inst.AccountMetaSlice[7]))
-						accountsBranch.Child(ag_format.Meta("        priceCurrencyMint", inst.AccountMetaSlice[8]))
-						accountsBranch.Child(ag_format.Meta("               rentSysvar", inst.AccountMetaSlice[9]))
-						if len(inst.AccountMetaSlice) > 10 {
-							accountsBranch.Child(ag_format.Meta("openOrdersMarketAuthority", inst.AccountMetaSlice[10]))
-						}
-						if len(inst.AccountMetaSlice) > 11 {
-							accountsBranch.Child(ag_format.Meta("           pruneAuthority", inst.AccountMetaSlice[11]))
-						}
-						if len(inst.AccountMetaSlice) > 12 {
-							accountsBranch.Child(ag_format.Meta("           crankAuthority", inst.AccountMetaSlice[12]))
-						}
+						accountsBranch.Child(ag_format.Meta("       marketToInitialize", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("             requestQueue", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("               eventQueue", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("                     bids", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("                     asks", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta("      splTokenAccountCoin", inst.AccountMetaSlice.Get(5)))
+						accountsBranch.Child(ag_format.Meta("     splTokenAccountPrice", inst.AccountMetaSlice.Get(6)))
+						accountsBranch.Child(ag_format.Meta("         coinCurrencyMint", inst.AccountMetaSlice.Get(7)))
+						accountsBranch.Child(ag_format.Meta("        priceCurrencyMint", inst.AccountMetaSlice.Get(8)))
+						accountsBranch.Child(ag_format.Meta("               rentSysvar", inst.AccountMetaSlice.Get(9)))
+						accountsBranch.Child(ag_format.Meta("openOrdersMarketAuthority", inst.AccountMetaSlice.Get(10)))
+						accountsBranch.Child(ag_format.Meta("           pruneAuthority", inst.AccountMetaSlice.Get(11)))
+						accountsBranch.Child(ag_format.Meta("           crankAuthority", inst.AccountMetaSlice.Get(12)))
 					})
 				})
 		})

@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -62,7 +63,7 @@ func (inst *Prune) SetMarketAccount(market ag_solanago.PublicKey) *Prune {
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *Prune) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetBidsAccount sets the "bids" account.
@@ -75,7 +76,7 @@ func (inst *Prune) SetBidsAccount(bids ag_solanago.PublicKey) *Prune {
 // GetBidsAccount gets the "bids" account.
 // bids
 func (inst *Prune) GetBidsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetAsksAccount sets the "asks" account.
@@ -88,7 +89,7 @@ func (inst *Prune) SetAsksAccount(asks ag_solanago.PublicKey) *Prune {
 // GetAsksAccount gets the "asks" account.
 // asks
 func (inst *Prune) GetAsksAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetPruneAuthorityAccount sets the "pruneAuthority" account.
@@ -101,7 +102,7 @@ func (inst *Prune) SetPruneAuthorityAccount(pruneAuthority ag_solanago.PublicKey
 // GetPruneAuthorityAccount gets the "pruneAuthority" account.
 // prune authority
 func (inst *Prune) GetPruneAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetOpenOrdersAccount sets the "openOrders" account.
@@ -114,7 +115,7 @@ func (inst *Prune) SetOpenOrdersAccount(openOrders ag_solanago.PublicKey) *Prune
 // GetOpenOrdersAccount gets the "openOrders" account.
 // open orders.
 func (inst *Prune) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -127,7 +128,7 @@ func (inst *Prune) SetOwnerAccount(owner ag_solanago.PublicKey) *Prune {
 // GetOwnerAccount gets the "owner" account.
 // open orders owner.
 func (inst *Prune) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -140,7 +141,7 @@ func (inst *Prune) SetEventQueueAccount(eventQueue ag_solanago.PublicKey) *Prune
 // GetEventQueueAccount gets the "eventQueue" account.
 // event queue.
 func (inst *Prune) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[6]
+	return inst.AccountMetaSlice.Get(6)
 }
 
 func (inst Prune) Build() *Instruction {
@@ -210,13 +211,13 @@ func (inst *Prune) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=7]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("        market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("          bids", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("          asks", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("pruneAuthority", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("    openOrders", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("         owner", inst.AccountMetaSlice[5]))
-						accountsBranch.Child(ag_format.Meta("    eventQueue", inst.AccountMetaSlice[6]))
+						accountsBranch.Child(ag_format.Meta("        market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("          bids", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("          asks", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("pruneAuthority", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("    openOrders", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta("         owner", inst.AccountMetaSlice.Get(5)))
+						accountsBranch.Child(ag_format.Meta("    eventQueue", inst.AccountMetaSlice.Get(6)))
 					})
 				})
 		})

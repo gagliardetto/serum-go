@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -40,7 +41,7 @@ func (inst *DisableMarket) SetMarketAccount(market ag_solanago.PublicKey) *Disab
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *DisableMarket) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetDisableAuthorityAccount sets the "disableAuthority" account.
@@ -53,7 +54,7 @@ func (inst *DisableMarket) SetDisableAuthorityAccount(disableAuthority ag_solana
 // GetDisableAuthorityAccount gets the "disableAuthority" account.
 // disable authority
 func (inst *DisableMarket) GetDisableAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 func (inst DisableMarket) Build() *Instruction {
@@ -99,8 +100,8 @@ func (inst *DisableMarket) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=2]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("          market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("disableAuthority", inst.AccountMetaSlice[1]))
+						accountsBranch.Child(ag_format.Meta("          market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("disableAuthority", inst.AccountMetaSlice.Get(1)))
 					})
 				})
 		})

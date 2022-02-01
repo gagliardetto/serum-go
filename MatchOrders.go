@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -56,7 +57,7 @@ func (inst *MatchOrders) SetMarketAccount(market ag_solanago.PublicKey) *MatchOr
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *MatchOrders) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetRequestQueueAccount sets the "requestQueue" account.
@@ -69,7 +70,7 @@ func (inst *MatchOrders) SetRequestQueueAccount(requestQueue ag_solanago.PublicK
 // GetRequestQueueAccount gets the "requestQueue" account.
 // req_q
 func (inst *MatchOrders) GetRequestQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -82,7 +83,7 @@ func (inst *MatchOrders) SetEventQueueAccount(eventQueue ag_solanago.PublicKey) 
 // GetEventQueueAccount gets the "eventQueue" account.
 // event_q
 func (inst *MatchOrders) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetBidsAccount sets the "bids" account.
@@ -95,7 +96,7 @@ func (inst *MatchOrders) SetBidsAccount(bids ag_solanago.PublicKey) *MatchOrders
 // GetBidsAccount gets the "bids" account.
 // bids
 func (inst *MatchOrders) GetBidsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetAsksAccount sets the "asks" account.
@@ -108,7 +109,7 @@ func (inst *MatchOrders) SetAsksAccount(asks ag_solanago.PublicKey) *MatchOrders
 // GetAsksAccount gets the "asks" account.
 // asks
 func (inst *MatchOrders) GetAsksAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 func (inst MatchOrders) Build() *Instruction {
@@ -172,11 +173,11 @@ func (inst *MatchOrders) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=5]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("      market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("requestQueue", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("  eventQueue", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("        bids", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("        asks", inst.AccountMetaSlice[4]))
+						accountsBranch.Child(ag_format.Meta("      market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("requestQueue", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("  eventQueue", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("        bids", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("        asks", inst.AccountMetaSlice.Get(4)))
 					})
 				})
 		})

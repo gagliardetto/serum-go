@@ -50,7 +50,7 @@ func (inst *InitOpenOrders) SetOpenOrdersAccount(openOrders ag_solanago.PublicKe
 // GetOpenOrdersAccount gets the "openOrders" account.
 // OpenOrders
 func (inst *InitOpenOrders) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -63,7 +63,7 @@ func (inst *InitOpenOrders) SetOwnerAccount(owner ag_solanago.PublicKey) *InitOp
 // GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
 func (inst *InitOpenOrders) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetMarketAccount sets the "market" account.
@@ -76,7 +76,7 @@ func (inst *InitOpenOrders) SetMarketAccount(market ag_solanago.PublicKey) *Init
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *InitOpenOrders) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetRentAccount sets the "rent" account.
@@ -89,7 +89,7 @@ func (inst *InitOpenOrders) SetRentAccount(rent ag_solanago.PublicKey) *InitOpen
 // GetRentAccount gets the "rent" account.
 // TODO: rent?
 func (inst *InitOpenOrders) GetRentAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetMarketAuthorityAccount sets the "marketAuthority" account.
@@ -102,7 +102,7 @@ func (inst *InitOpenOrders) SetMarketAuthorityAccount(marketAuthority ag_solanag
 // GetMarketAuthorityAccount gets the "marketAuthority" account.
 // open orders market authority (optional).
 func (inst *InitOpenOrders) GetMarketAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 func (inst InitOpenOrders) Build() *Instruction {
@@ -157,13 +157,11 @@ func (inst *InitOpenOrders) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=5]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("           rent", inst.AccountMetaSlice[3]))
-						if len(inst.AccountMetaSlice) > 4 {
-							accountsBranch.Child(ag_format.Meta("marketAuthority", inst.AccountMetaSlice[4]))
-						}
+						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("           rent", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("marketAuthority", inst.AccountMetaSlice.Get(4)))
 					})
 				})
 		})

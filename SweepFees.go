@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -52,7 +53,7 @@ func (inst *SweepFees) SetMarketAccount(market ag_solanago.PublicKey) *SweepFees
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *SweepFees) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetPcVaultAccount sets the "pcVault" account.
@@ -65,7 +66,7 @@ func (inst *SweepFees) SetPcVaultAccount(pcVault ag_solanago.PublicKey) *SweepFe
 // GetPcVaultAccount gets the "pcVault" account.
 // pc vault
 func (inst *SweepFees) GetPcVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetFeeSweepingAuthorityAccount sets the "feeSweepingAuthority" account.
@@ -78,7 +79,7 @@ func (inst *SweepFees) SetFeeSweepingAuthorityAccount(feeSweepingAuthority ag_so
 // GetFeeSweepingAuthorityAccount gets the "feeSweepingAuthority" account.
 // fee sweeping authority
 func (inst *SweepFees) GetFeeSweepingAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetFeeReceivableAccount sets the "feeReceivable" account.
@@ -91,7 +92,7 @@ func (inst *SweepFees) SetFeeReceivableAccount(feeReceivable ag_solanago.PublicK
 // GetFeeReceivableAccount gets the "feeReceivable" account.
 // fee receivable account
 func (inst *SweepFees) GetFeeReceivableAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetVaultSignerAccount sets the "vaultSigner" account.
@@ -104,7 +105,7 @@ func (inst *SweepFees) SetVaultSignerAccount(vaultSigner ag_solanago.PublicKey) 
 // GetVaultSignerAccount gets the "vaultSigner" account.
 // vault signer
 func (inst *SweepFees) GetVaultSignerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetSplTokenProgramAccount sets the "splTokenProgram" account.
@@ -117,7 +118,7 @@ func (inst *SweepFees) SetSplTokenProgramAccount(splTokenProgram ag_solanago.Pub
 // GetSplTokenProgramAccount gets the "splTokenProgram" account.
 // spl token program
 func (inst *SweepFees) GetSplTokenProgramAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 func (inst SweepFees) Build() *Instruction {
@@ -175,12 +176,12 @@ func (inst *SweepFees) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=6]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("              market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("             pcVault", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("feeSweepingAuthority", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("       feeReceivable", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("         vaultSigner", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("     splTokenProgram", inst.AccountMetaSlice[5]))
+						accountsBranch.Child(ag_format.Meta("              market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("             pcVault", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("feeSweepingAuthority", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("       feeReceivable", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("         vaultSigner", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta("     splTokenProgram", inst.AccountMetaSlice.Get(5)))
 					})
 				})
 		})

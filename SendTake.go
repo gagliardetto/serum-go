@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -77,7 +78,7 @@ func (inst *SendTake) SetMarketAccount(market ag_solanago.PublicKey) *SendTake {
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *SendTake) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetRequestQueueAccount sets the "requestQueue" account.
@@ -90,7 +91,7 @@ func (inst *SendTake) SetRequestQueueAccount(requestQueue ag_solanago.PublicKey)
 // GetRequestQueueAccount gets the "requestQueue" account.
 // the request queue
 func (inst *SendTake) GetRequestQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -103,7 +104,7 @@ func (inst *SendTake) SetEventQueueAccount(eventQueue ag_solanago.PublicKey) *Se
 // GetEventQueueAccount gets the "eventQueue" account.
 // the event queue
 func (inst *SendTake) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetBidsAccount sets the "bids" account.
@@ -116,7 +117,7 @@ func (inst *SendTake) SetBidsAccount(bids ag_solanago.PublicKey) *SendTake {
 // GetBidsAccount gets the "bids" account.
 // bids
 func (inst *SendTake) GetBidsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetAsksAccount sets the "asks" account.
@@ -129,7 +130,7 @@ func (inst *SendTake) SetAsksAccount(asks ag_solanago.PublicKey) *SendTake {
 // GetAsksAccount gets the "asks" account.
 // asks
 func (inst *SendTake) GetAsksAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetCoinCurrencyWalletAccount sets the "coinCurrencyWallet" account.
@@ -142,7 +143,7 @@ func (inst *SendTake) SetCoinCurrencyWalletAccount(coinCurrencyWallet ag_solanag
 // GetCoinCurrencyWalletAccount gets the "coinCurrencyWallet" account.
 // the coin currency wallet account
 func (inst *SendTake) GetCoinCurrencyWalletAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 // SetPriceCurrencyWalletAccount sets the "priceCurrencyWallet" account.
@@ -155,7 +156,7 @@ func (inst *SendTake) SetPriceCurrencyWalletAccount(priceCurrencyWallet ag_solan
 // GetPriceCurrencyWalletAccount gets the "priceCurrencyWallet" account.
 // the price currency wallet account
 func (inst *SendTake) GetPriceCurrencyWalletAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[6]
+	return inst.AccountMetaSlice.Get(6)
 }
 
 // SetSignerAccount sets the "signer" account.
@@ -168,7 +169,7 @@ func (inst *SendTake) SetSignerAccount(signer ag_solanago.PublicKey) *SendTake {
 // GetSignerAccount gets the "signer" account.
 // signer
 func (inst *SendTake) GetSignerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[7]
+	return inst.AccountMetaSlice.Get(7)
 }
 
 // SetCoinVaultAccount sets the "coinVault" account.
@@ -181,7 +182,7 @@ func (inst *SendTake) SetCoinVaultAccount(coinVault ag_solanago.PublicKey) *Send
 // GetCoinVaultAccount gets the "coinVault" account.
 // coin vault
 func (inst *SendTake) GetCoinVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[8]
+	return inst.AccountMetaSlice.Get(8)
 }
 
 // SetPcVaultAccount sets the "pcVault" account.
@@ -194,7 +195,7 @@ func (inst *SendTake) SetPcVaultAccount(pcVault ag_solanago.PublicKey) *SendTake
 // GetPcVaultAccount gets the "pcVault" account.
 // pc vault
 func (inst *SendTake) GetPcVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[9]
+	return inst.AccountMetaSlice.Get(9)
 }
 
 // SetSplTokenProgramAccount sets the "splTokenProgram" account.
@@ -207,7 +208,7 @@ func (inst *SendTake) SetSplTokenProgramAccount(splTokenProgram ag_solanago.Publ
 // GetSplTokenProgramAccount gets the "splTokenProgram" account.
 // spl token program
 func (inst *SendTake) GetSplTokenProgramAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[10]
+	return inst.AccountMetaSlice.Get(10)
 }
 
 // SetFeeDiscountsAccount sets the "feeDiscounts" account.
@@ -220,7 +221,7 @@ func (inst *SendTake) SetFeeDiscountsAccount(feeDiscounts ag_solanago.PublicKey)
 // GetFeeDiscountsAccount gets the "feeDiscounts" account.
 // (optional) the (M)SRM account used for fee discounts
 func (inst *SendTake) GetFeeDiscountsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[11]
+	return inst.AccountMetaSlice.Get(11)
 }
 
 func (inst SendTake) Build() *Instruction {
@@ -305,18 +306,18 @@ func (inst *SendTake) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=12]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("             market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("       requestQueue", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("         eventQueue", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("               bids", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("               asks", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta(" coinCurrencyWallet", inst.AccountMetaSlice[5]))
-						accountsBranch.Child(ag_format.Meta("priceCurrencyWallet", inst.AccountMetaSlice[6]))
-						accountsBranch.Child(ag_format.Meta("             signer", inst.AccountMetaSlice[7]))
-						accountsBranch.Child(ag_format.Meta("          coinVault", inst.AccountMetaSlice[8]))
-						accountsBranch.Child(ag_format.Meta("            pcVault", inst.AccountMetaSlice[9]))
-						accountsBranch.Child(ag_format.Meta("    splTokenProgram", inst.AccountMetaSlice[10]))
-						accountsBranch.Child(ag_format.Meta("       feeDiscounts", inst.AccountMetaSlice[11]))
+						accountsBranch.Child(ag_format.Meta("             market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("       requestQueue", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("         eventQueue", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("               bids", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("               asks", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta(" coinCurrencyWallet", inst.AccountMetaSlice.Get(5)))
+						accountsBranch.Child(ag_format.Meta("priceCurrencyWallet", inst.AccountMetaSlice.Get(6)))
+						accountsBranch.Child(ag_format.Meta("             signer", inst.AccountMetaSlice.Get(7)))
+						accountsBranch.Child(ag_format.Meta("          coinVault", inst.AccountMetaSlice.Get(8)))
+						accountsBranch.Child(ag_format.Meta("            pcVault", inst.AccountMetaSlice.Get(9)))
+						accountsBranch.Child(ag_format.Meta("    splTokenProgram", inst.AccountMetaSlice.Get(10)))
+						accountsBranch.Child(ag_format.Meta("       feeDiscounts", inst.AccountMetaSlice.Get(11)))
 					})
 				})
 		})

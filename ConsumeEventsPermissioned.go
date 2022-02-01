@@ -90,7 +90,7 @@ func (inst *ConsumeEventsPermissioned) SetMarketAccount(market ag_solanago.Publi
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *ConsumeEventsPermissioned) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[0]
+	return inst.OtherAccounts.Get(0)
 }
 
 // SetEventQueueAccount sets the "eventQueue" account.
@@ -103,7 +103,7 @@ func (inst *ConsumeEventsPermissioned) SetEventQueueAccount(eventQueue ag_solana
 // GetEventQueueAccount gets the "eventQueue" account.
 // event queue
 func (inst *ConsumeEventsPermissioned) GetEventQueueAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[1]
+	return inst.OtherAccounts.Get(1)
 }
 
 // SetCrankAuthorityAccount sets the "crankAuthority" account.
@@ -116,7 +116,7 @@ func (inst *ConsumeEventsPermissioned) SetCrankAuthorityAccount(crankAuthority a
 // GetCrankAuthorityAccount gets the "crankAuthority" account.
 // crank authority
 func (inst *ConsumeEventsPermissioned) GetCrankAuthorityAccount() *ag_solanago.AccountMeta {
-	return inst.OtherAccounts[2]
+	return inst.OtherAccounts.Get(2)
 }
 
 func (inst ConsumeEventsPermissioned) Build() *Instruction {
@@ -184,9 +184,9 @@ func (inst *ConsumeEventsPermissioned) EncodeToTree(parent ag_treeout.Branches) 
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=3]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("        market", inst.OtherAccounts[0]))
-						accountsBranch.Child(ag_format.Meta("    eventQueue", inst.OtherAccounts[1]))
-						accountsBranch.Child(ag_format.Meta("crankAuthority", inst.OtherAccounts[2]))
+						accountsBranch.Child(ag_format.Meta("        market", inst.OtherAccounts.Get(0)))
+						accountsBranch.Child(ag_format.Meta("    eventQueue", inst.OtherAccounts.Get(1)))
+						accountsBranch.Child(ag_format.Meta("crankAuthority", inst.OtherAccounts.Get(2)))
 					})
 				})
 		})

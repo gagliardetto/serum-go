@@ -72,7 +72,7 @@ func (inst *NewOrder) SetMarketAccount(market ag_solanago.PublicKey) *NewOrder {
 // GetMarketAccount gets the "market" account.
 // the market
 func (inst *NewOrder) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetOpenOrdersAccount sets the "openOrders" account.
@@ -85,7 +85,7 @@ func (inst *NewOrder) SetOpenOrdersAccount(openOrders ag_solanago.PublicKey) *Ne
 // GetOpenOrdersAccount gets the "openOrders" account.
 // the OpenOrders account to use
 func (inst *NewOrder) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetRequestQueueAccount sets the "requestQueue" account.
@@ -98,7 +98,7 @@ func (inst *NewOrder) SetRequestQueueAccount(requestQueue ag_solanago.PublicKey)
 // GetRequestQueueAccount gets the "requestQueue" account.
 // the request queue
 func (inst *NewOrder) GetRequestQueueAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetOrderPayerAccount sets the "orderPayer" account.
@@ -111,7 +111,7 @@ func (inst *NewOrder) SetOrderPayerAccount(orderPayer ag_solanago.PublicKey) *Ne
 // GetOrderPayerAccount gets the "orderPayer" account.
 // the (coin or price currency) account paying for the order
 func (inst *NewOrder) GetOrderPayerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -124,7 +124,7 @@ func (inst *NewOrder) SetOwnerAccount(owner ag_solanago.PublicKey) *NewOrder {
 // GetOwnerAccount gets the "owner" account.
 // owner of the OpenOrders account
 func (inst *NewOrder) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetCoinVaultAccount sets the "coinVault" account.
@@ -137,7 +137,7 @@ func (inst *NewOrder) SetCoinVaultAccount(coinVault ag_solanago.PublicKey) *NewO
 // GetCoinVaultAccount gets the "coinVault" account.
 // coin vault
 func (inst *NewOrder) GetCoinVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 // SetPcVaultAccount sets the "pcVault" account.
@@ -150,7 +150,7 @@ func (inst *NewOrder) SetPcVaultAccount(pcVault ag_solanago.PublicKey) *NewOrder
 // GetPcVaultAccount gets the "pcVault" account.
 // pc vault
 func (inst *NewOrder) GetPcVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[6]
+	return inst.AccountMetaSlice.Get(6)
 }
 
 // SetSplTokenProgramAccount sets the "splTokenProgram" account.
@@ -163,7 +163,7 @@ func (inst *NewOrder) SetSplTokenProgramAccount(splTokenProgram ag_solanago.Publ
 // GetSplTokenProgramAccount gets the "splTokenProgram" account.
 // spl token program
 func (inst *NewOrder) GetSplTokenProgramAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[7]
+	return inst.AccountMetaSlice.Get(7)
 }
 
 // SetRentSysvarAccount sets the "rentSysvar" account.
@@ -176,7 +176,7 @@ func (inst *NewOrder) SetRentSysvarAccount(rentSysvar ag_solanago.PublicKey) *Ne
 // GetRentSysvarAccount gets the "rentSysvar" account.
 // the rent sysvar
 func (inst *NewOrder) GetRentSysvarAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[8]
+	return inst.AccountMetaSlice.Get(8)
 }
 
 // SetFeeDiscountsAccount sets the "feeDiscounts" account.
@@ -189,7 +189,7 @@ func (inst *NewOrder) SetFeeDiscountsAccount(feeDiscounts ag_solanago.PublicKey)
 // GetFeeDiscountsAccount gets the "feeDiscounts" account.
 // (optional) the (M)SRM account used for fee discounts
 func (inst *NewOrder) GetFeeDiscountsAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[9]
+	return inst.AccountMetaSlice.Get(9)
 }
 
 func (inst NewOrder) Build() *Instruction {
@@ -268,18 +268,16 @@ func (inst *NewOrder) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=10]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("   requestQueue", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("     orderPayer", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("      coinVault", inst.AccountMetaSlice[5]))
-						accountsBranch.Child(ag_format.Meta("        pcVault", inst.AccountMetaSlice[6]))
-						accountsBranch.Child(ag_format.Meta("splTokenProgram", inst.AccountMetaSlice[7]))
-						accountsBranch.Child(ag_format.Meta("     rentSysvar", inst.AccountMetaSlice[8]))
-						if len(inst.AccountMetaSlice) > 9 {
-							accountsBranch.Child(ag_format.Meta("   feeDiscounts", inst.AccountMetaSlice[9]))
-						}
+						accountsBranch.Child(ag_format.Meta("         market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("     openOrders", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("   requestQueue", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("     orderPayer", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("          owner", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta("      coinVault", inst.AccountMetaSlice.Get(5)))
+						accountsBranch.Child(ag_format.Meta("        pcVault", inst.AccountMetaSlice.Get(6)))
+						accountsBranch.Child(ag_format.Meta("splTokenProgram", inst.AccountMetaSlice.Get(7)))
+						accountsBranch.Child(ag_format.Meta("     rentSysvar", inst.AccountMetaSlice.Get(8)))
+						accountsBranch.Child(ag_format.Meta("   feeDiscounts", inst.AccountMetaSlice.Get(9)))
 					})
 				})
 		})

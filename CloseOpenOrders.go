@@ -5,6 +5,7 @@ package serum_dex
 import (
 	"encoding/binary"
 	"errors"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -46,7 +47,7 @@ func (inst *CloseOpenOrders) SetOpenOrdersAccount(openOrders ag_solanago.PublicK
 // GetOpenOrdersAccount gets the "openOrders" account.
 // OpenOrders
 func (inst *CloseOpenOrders) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -59,7 +60,7 @@ func (inst *CloseOpenOrders) SetOwnerAccount(owner ag_solanago.PublicKey) *Close
 // GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
 func (inst *CloseOpenOrders) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetDestinationAccount sets the "destination" account.
@@ -72,7 +73,7 @@ func (inst *CloseOpenOrders) SetDestinationAccount(destination ag_solanago.Publi
 // GetDestinationAccount gets the "destination" account.
 // the destination account to send rent exemption SOL to
 func (inst *CloseOpenOrders) GetDestinationAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetMarketAccount sets the "market" account.
@@ -85,7 +86,7 @@ func (inst *CloseOpenOrders) SetMarketAccount(market ag_solanago.PublicKey) *Clo
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *CloseOpenOrders) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 func (inst CloseOpenOrders) Build() *Instruction {
@@ -137,10 +138,10 @@ func (inst *CloseOpenOrders) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=4]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta(" openOrders", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("      owner", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("destination", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("     market", inst.AccountMetaSlice[3]))
+						accountsBranch.Child(ag_format.Meta(" openOrders", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("      owner", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("destination", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("     market", inst.AccountMetaSlice.Get(3)))
 					})
 				})
 		})

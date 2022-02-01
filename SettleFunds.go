@@ -65,7 +65,7 @@ func (inst *SettleFunds) SetMarketAccount(market ag_solanago.PublicKey) *SettleF
 // GetMarketAccount gets the "market" account.
 // market
 func (inst *SettleFunds) GetMarketAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[0]
+	return inst.AccountMetaSlice.Get(0)
 }
 
 // SetOpenOrdersAccount sets the "openOrders" account.
@@ -78,7 +78,7 @@ func (inst *SettleFunds) SetOpenOrdersAccount(openOrders ag_solanago.PublicKey) 
 // GetOpenOrdersAccount gets the "openOrders" account.
 // OpenOrders
 func (inst *SettleFunds) GetOpenOrdersAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[1]
+	return inst.AccountMetaSlice.Get(1)
 }
 
 // SetOwnerAccount sets the "owner" account.
@@ -91,7 +91,7 @@ func (inst *SettleFunds) SetOwnerAccount(owner ag_solanago.PublicKey) *SettleFun
 // GetOwnerAccount gets the "owner" account.
 // the OpenOrders owner
 func (inst *SettleFunds) GetOwnerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[2]
+	return inst.AccountMetaSlice.Get(2)
 }
 
 // SetCoinVaultAccount sets the "coinVault" account.
@@ -104,7 +104,7 @@ func (inst *SettleFunds) SetCoinVaultAccount(coinVault ag_solanago.PublicKey) *S
 // GetCoinVaultAccount gets the "coinVault" account.
 // coin vault
 func (inst *SettleFunds) GetCoinVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[3]
+	return inst.AccountMetaSlice.Get(3)
 }
 
 // SetPcVaultAccount sets the "pcVault" account.
@@ -117,7 +117,7 @@ func (inst *SettleFunds) SetPcVaultAccount(pcVault ag_solanago.PublicKey) *Settl
 // GetPcVaultAccount gets the "pcVault" account.
 // pc vault
 func (inst *SettleFunds) GetPcVaultAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[4]
+	return inst.AccountMetaSlice.Get(4)
 }
 
 // SetCoinWalletAccount sets the "coinWallet" account.
@@ -130,7 +130,7 @@ func (inst *SettleFunds) SetCoinWalletAccount(coinWallet ag_solanago.PublicKey) 
 // GetCoinWalletAccount gets the "coinWallet" account.
 // coin wallet
 func (inst *SettleFunds) GetCoinWalletAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[5]
+	return inst.AccountMetaSlice.Get(5)
 }
 
 // SetPcWalletAccount sets the "pcWallet" account.
@@ -143,7 +143,7 @@ func (inst *SettleFunds) SetPcWalletAccount(pcWallet ag_solanago.PublicKey) *Set
 // GetPcWalletAccount gets the "pcWallet" account.
 // pc wallet
 func (inst *SettleFunds) GetPcWalletAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[6]
+	return inst.AccountMetaSlice.Get(6)
 }
 
 // SetVaultSignerAccount sets the "vaultSigner" account.
@@ -156,7 +156,7 @@ func (inst *SettleFunds) SetVaultSignerAccount(vaultSigner ag_solanago.PublicKey
 // GetVaultSignerAccount gets the "vaultSigner" account.
 // vault signer
 func (inst *SettleFunds) GetVaultSignerAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[7]
+	return inst.AccountMetaSlice.Get(7)
 }
 
 // SetSplTokenProgramAccount sets the "splTokenProgram" account.
@@ -169,7 +169,7 @@ func (inst *SettleFunds) SetSplTokenProgramAccount(splTokenProgram ag_solanago.P
 // GetSplTokenProgramAccount gets the "splTokenProgram" account.
 // spl token program
 func (inst *SettleFunds) GetSplTokenProgramAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[8]
+	return inst.AccountMetaSlice.Get(8)
 }
 
 // SetReferrerPcWalletAccount sets the "referrerPcWallet" account.
@@ -182,7 +182,7 @@ func (inst *SettleFunds) SetReferrerPcWalletAccount(referrerPcWallet ag_solanago
 // GetReferrerPcWalletAccount gets the "referrerPcWallet" account.
 // (optional) referrer pc wallet
 func (inst *SettleFunds) GetReferrerPcWalletAccount() *ag_solanago.AccountMeta {
-	return inst.AccountMetaSlice[9]
+	return inst.AccountMetaSlice.Get(9)
 }
 
 func (inst SettleFunds) Build() *Instruction {
@@ -252,18 +252,16 @@ func (inst *SettleFunds) EncodeToTree(parent ag_treeout.Branches) {
 
 					// Accounts of the instruction:
 					instructionBranch.Child("Accounts[len=10]").ParentFunc(func(accountsBranch ag_treeout.Branches) {
-						accountsBranch.Child(ag_format.Meta("          market", inst.AccountMetaSlice[0]))
-						accountsBranch.Child(ag_format.Meta("      openOrders", inst.AccountMetaSlice[1]))
-						accountsBranch.Child(ag_format.Meta("           owner", inst.AccountMetaSlice[2]))
-						accountsBranch.Child(ag_format.Meta("       coinVault", inst.AccountMetaSlice[3]))
-						accountsBranch.Child(ag_format.Meta("         pcVault", inst.AccountMetaSlice[4]))
-						accountsBranch.Child(ag_format.Meta("      coinWallet", inst.AccountMetaSlice[5]))
-						accountsBranch.Child(ag_format.Meta("        pcWallet", inst.AccountMetaSlice[6]))
-						accountsBranch.Child(ag_format.Meta("     vaultSigner", inst.AccountMetaSlice[7]))
-						accountsBranch.Child(ag_format.Meta(" splTokenProgram", inst.AccountMetaSlice[8]))
-						if len(inst.AccountMetaSlice) > 9 {
-							accountsBranch.Child(ag_format.Meta("referrerPcWallet", inst.AccountMetaSlice[9]))
-						}
+						accountsBranch.Child(ag_format.Meta("          market", inst.AccountMetaSlice.Get(0)))
+						accountsBranch.Child(ag_format.Meta("      openOrders", inst.AccountMetaSlice.Get(1)))
+						accountsBranch.Child(ag_format.Meta("           owner", inst.AccountMetaSlice.Get(2)))
+						accountsBranch.Child(ag_format.Meta("       coinVault", inst.AccountMetaSlice.Get(3)))
+						accountsBranch.Child(ag_format.Meta("         pcVault", inst.AccountMetaSlice.Get(4)))
+						accountsBranch.Child(ag_format.Meta("      coinWallet", inst.AccountMetaSlice.Get(5)))
+						accountsBranch.Child(ag_format.Meta("        pcWallet", inst.AccountMetaSlice.Get(6)))
+						accountsBranch.Child(ag_format.Meta("     vaultSigner", inst.AccountMetaSlice.Get(7)))
+						accountsBranch.Child(ag_format.Meta(" splTokenProgram", inst.AccountMetaSlice.Get(8)))
+						accountsBranch.Child(ag_format.Meta("referrerPcWallet", inst.AccountMetaSlice.Get(9)))
 					})
 				})
 		})
