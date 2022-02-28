@@ -28,11 +28,12 @@ func main() {
     // WARNING: THIS IS EPERIMENTAL AND NON-WORKING DRAFT
     serumgo.SetProgramID(serumgo.SerumDexV1)
     // Create a new RPC client (TODO: you need to select the appropriate network):
-    rpcClient := rpc.New(rpc.DevNet_RPC)
+    cluster := rpc.DevNet
+    rpcClient := rpc.New(cluster.RPC)
 
     // Create a new WS client (used for confirming transactions).
     // NOTE: here too you need to select the appropriate net.
-    wsClient, err := ws.Connect(context.Background(), rpc.DevNet_WS)
+    wsClient, err := ws.Connect(context.Background(), cluster.WS)
     if err != nil {
         panic(err)
     }
