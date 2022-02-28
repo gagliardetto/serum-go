@@ -11,7 +11,7 @@ import (
     "fmt"
 
     "github.com/davecgh/go-spew/spew"
-    serum_dex "github.com/gagliardetto/serum-go"
+    serumgo "github.com/gagliardetto/serum-go"
     "github.com/gagliardetto/solana-go"
     "github.com/gagliardetto/solana-go/rpc"
     confirm "github.com/gagliardetto/solana-go/rpc/sendAndConfirmTransaction"
@@ -26,7 +26,7 @@ func main() {
     // WARNING: THIS IS EPERIMENTAL AND NON-WORKING DRAFT
     // WARNING: THIS IS EPERIMENTAL AND NON-WORKING DRAFT
     // WARNING: THIS IS EPERIMENTAL AND NON-WORKING DRAFT
-    serum_dex.SetProgramID(serum_dex.SerumDexV1)
+    serumgo.SetProgramID(serumgo.SerumDexV1)
     // Create a new RPC client (TODO: you need to select the appropriate network):
     rpcClient := rpc.New(rpc.DevNet_RPC)
 
@@ -55,11 +55,11 @@ func main() {
     {
 
         // Parameters:
-        args := serum_dex.NewOrderInstructionV1{
-            Side:       serum_dex.SideAsk,
+        args := serumgo.NewOrderInstructionV1{
+            Side:       serumgo.SideAsk,
             LimitPrice: 1720,
             MaxQty:     650000,
-            OrderType:  serum_dex.OrderTypeLimit,
+            OrderType:  serumgo.OrderTypeLimit,
             ClientId:   1608306862011613462,
         }
         // Accounts:
@@ -74,7 +74,7 @@ func main() {
         rentSysvar := solana.MustPublicKeyFromBase58("TODO")
         feeDiscounts := solana.MustPublicKeyFromBase58("TODO")
 
-        newOrderInstruction := serum_dex.NewNewOrderInstructionBuilder().
+        newOrderInstruction := serumgo.NewNewOrderInstructionBuilder().
             SetArgs(args).
             SetMarketAccount(market).
             SetOpenOrdersAccount(openOrders).

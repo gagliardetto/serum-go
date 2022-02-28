@@ -1,4 +1,4 @@
-package serum_dex
+package serumgo
 
 import "github.com/gagliardetto/solana-go"
 

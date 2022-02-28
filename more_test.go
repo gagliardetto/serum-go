@@ -1,4 +1,4 @@
-package serum_dex
+package serumgo
 
 // NOTE: Special thanks to https://github.com/murlokito for writing and letting me port
 // the instruction decoder tests from https://github.com/bmresearch/Solnet.Serum/blob/master/Solnet.Serum.Test/InstructionDecoderTest.cs
